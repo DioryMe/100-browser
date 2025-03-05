@@ -19,7 +19,7 @@ const ContentSwipes = () => {
   const url3 = "http://diory-demo-content.surge.sh/demo-content.png";
 
   return (
-    <Swiper className="mySwiper" initialSlide={1}>
+    <Swiper className="mySwiper" speed={200} initialSlide={1}>
       {[url, url2, url3].map((imageUrl, i) => {
         return (
           <SwiperSlide key={i}>
