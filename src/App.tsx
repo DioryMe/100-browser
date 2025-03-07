@@ -2,13 +2,15 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./homePage";
 import "./App.css";
 import ContentSwipes from "./ContentSwipes";
+import DiorySwipes from "./DiorySwipes";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<ContentSwipes />} />
         <Route
-          path="/"
+          path="/content"
           element={
             <ContentSwipes />
             // <Navigate replace to="/home" />

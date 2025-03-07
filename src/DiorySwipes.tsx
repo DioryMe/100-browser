@@ -1,11 +1,11 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import "./ContentSwipes.module.css";
+import "./DiorySwipes.module.css";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const ContentSwipes = () => {
+const DiorySwipes = () => {
   const navigate = useNavigate();
   // const [slides, setSlides] = useState<any>([]);
 
@@ -20,8 +20,14 @@ const ContentSwipes = () => {
       {[url, url2, url3].map((imageUrl, i) => {
         return (
           <SwiperSlide key={i}>
-            <div className="container">
-              <img onClick={() => navigate("/")} src={imageUrl} />
+            <div className="flex-container column">
+              <div className="flex-item">Image123</div>
+              <div className="flex-item">
+                <div className="image-container">
+                  <img onClick={() => navigate("/content")} src={imageUrl} />
+                </div>
+              </div>
+              <div className="flex-item">Info</div>
             </div>
           </SwiperSlide>
         );
@@ -30,4 +36,4 @@ const ContentSwipes = () => {
   );
 };
 
-export default ContentSwipes;
+export default DiorySwipes;
