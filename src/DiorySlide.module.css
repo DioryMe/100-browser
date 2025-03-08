@@ -36,3 +36,13 @@
   font-weight: bold;
   text-align: right;
 }
+
+.imageContainer {
+  padding: 20px;
+  padding-top: 50px;
+  height: 150px;
+  gap: 40px;
+  display: flex;
+  flex-direction: row;
+  overflow: scroll;
+}
