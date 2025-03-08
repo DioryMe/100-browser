@@ -1,10 +1,14 @@
+import { useNavigate } from "react-router-dom";
+import { stories } from "./App";
+import styles from "./DiorySwipes.module.css";
+
 const HomePage = () => {
-  const url =
-    "https://media.istockphoto.com/id/636379014/fi/valokuva/k%C3%A4det-muodostavat-syd%C3%A4men-muodon-auringonlaskun-siluetti.jpg?s=1024x1024&w=is&k=20&c=hCdUB-xdu_FwJNRUq23AfFSOKCqDQ8_eeLMaV9yup5s=";
+  const navigate = useNavigate();
 
   return (
-    <div className="container">
-      <img src={url} />
+    <div className={styles.container}>
+      <div>My Diory</div>
+      <img onClick={() => navigate("/story")} src={stories[1][0]} />
     </div>
   );
 };

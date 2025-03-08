@@ -3,8 +3,10 @@ import HomePage from "./homePage";
 import "./App.css";
 import ContentSwipes from "./ContentSwipes";
 import DiorySwipes from "./DiorySwipes";
+import StorySwipes from "./StorySwipes";
+import StoryContentSwipes from "./StoryContentSwipes";
 
-export const contents = [
+export const stories = [
   [
     "https://www.publicdomainpictures.net/pictures/190000/velka/travel-background-1469438300Bbk.jpg",
     "image",
@@ -17,6 +19,9 @@ export const contents = [
     "https://upload.wikimedia.org/wikipedia/commons/2/21/Downtown_Tampere4.jpg",
     "image",
   ],
+];
+
+export const contents = [
   [
     "https://media.istockphoto.com/id/636379014/fi/valokuva/k%C3%A4det-muodostavat-syd%C3%A4men-muodon-auringonlaskun-siluetti.jpg?s=1024x1024&w=is&k=20&c=hCdUB-xdu_FwJNRUq23AfFSOKCqDQ8_eeLMaV9yup5s=",
     "image",
@@ -36,15 +41,11 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate replace to="/content" />} />
+        <Route path="/" element={<Navigate replace to="/home" />} />
+        <Route path="/story" element={<StorySwipes />} />
         <Route path="/diory" element={<DiorySwipes />} />
-        <Route
-          path="/content"
-          element={
-            <ContentSwipes />
-            // <Navigate replace to="/home" />
-          }
-        />
+        <Route path="/story-content" element={<StoryContentSwipes />} />
+        <Route path="/content" element={<ContentSwipes />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/*" element={"Not found"} />
       </Routes>
