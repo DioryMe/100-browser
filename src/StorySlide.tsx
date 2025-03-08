@@ -4,20 +4,25 @@ import styles from "./DiorySlide.module.css";
 export const StorySlide = ({
   storyImageUrl,
   images,
+  storyOnClick,
 }: {
   storyImageUrl: string;
   images: string[];
+  storyOnClick: React.MouseEventHandler;
 }) => {
   const navigate = useNavigate();
-
   return (
     <div className={styles.diorySlideContainer}>
       <div className={styles.image}>
-        <img onClick={() => navigate("/content")} src={storyImageUrl} />
+        <img onClick={storyOnClick} src={storyImageUrl} />
       </div>
       <div className={`${styles.imageContainer} swiper-no-swiping`}>
-        {images.map((imageUrl) => (
-          <img src={imageUrl} />
+        {images.map((imageUrl, i) => (
+          <img
+            key={`images-${i}`}
+            src={imageUrl}
+            onClick={() => navigate("/diory")}
+          />
         ))}
       </div>
       <div className={styles.infoSectionContainer}>

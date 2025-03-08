@@ -3,13 +3,12 @@ import "swiper/css";
 import styles from "./DiorySwipes.module.css";
 
 // import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { DiorySlide } from "./DiorySlide";
-import { contents } from "./App";
-import { StorySlide } from "./StorySlide";
+import { contents, stories } from "./App";
 
 const DiorySwipes = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   // const [slides, setSlides] = useState<any>([]);
 
   return (
@@ -22,7 +21,9 @@ const DiorySwipes = () => {
         >
           <img src="https://www.svgrepo.com/download/305142/arrow-ios-back.svg" />
         </div>
-        <div className={styles.headerText}>Diory 1</div>
+        <div className={styles.headerText} onClick={() => navigate("/story")}>
+          Story
+        </div>
         <div
           style={{ width: "80px", height: "100%" }}
           className={styles.headerSquare}
@@ -32,15 +33,10 @@ const DiorySwipes = () => {
       </div>
       <div className={styles.swiperContainer}>
         <Swiper className="mySwiper" speed={200} initialSlide={1}>
-          {contents.map(([imageUrl], i) => {
+          {contents.slice(0, 3).map(([imageUrl], i) => {
             return (
               <SwiperSlide>
-                <StorySlide
-                  key={i}
-                  storyImageUrl={imageUrl}
-                  images={contents.slice(0, 6).map((s) => s[0])}
-                />
-                ;{/* <DiorySlide key={i} imageUrl={imageUrl} />; */}
+                <DiorySlide key={i} imageUrl={imageUrl} />;
               </SwiperSlide>
             );
           })}
