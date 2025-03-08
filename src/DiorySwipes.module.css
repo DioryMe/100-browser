@@ -4,12 +4,23 @@
   background: white;
 }
 
-.header {
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.headerText {
+  display: flex;
+  align-items: center;
+}
+
+.image {
+  display: flex;
+  align-items: center;
+  background-color: whitesmoke;
 }
 
 .image > img {
-  /* height: 200px;
-  width: 200px; */
   object-fit: cover;
 }
 

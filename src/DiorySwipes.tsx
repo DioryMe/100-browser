@@ -21,10 +21,14 @@ const DiorySwipes = () => {
         return (
           <SwiperSlide key={i}>
             <div className={styles.container}>
-              <div className={styles.header}>
-                <div> -- Back</div>
-                <div>Diory 1</div>
-                <div>Hamburger</div>
+              <div className={styles.headerContainer}>
+                <div>
+                  <img src="https://www.svgrepo.com/download/305142/arrow-ios-back.svg" />
+                </div>
+                <div className={styles.headerText}>Diory 1</div>
+                <div>
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Hamburger_icon.svg/640px-Hamburger_icon.svg.png" />
+                </div>
               </div>
               <div className={styles.image}>
                 <img onClick={() => navigate("/content")} src={imageUrl} />

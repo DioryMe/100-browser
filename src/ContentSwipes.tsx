@@ -1,6 +1,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import { styles } from "./ContentSwipes.module.css";
+// import { styles } from "./ContentSwipes.module.css";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
