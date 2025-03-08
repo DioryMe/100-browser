@@ -20,7 +20,7 @@ const ContentSwipes = () => {
       {[url, url2, url3].map((imageUrl, i) => {
         return (
           <SwiperSlide key={i}>
-            <img onClick={() => navigate("/")} src={imageUrl} />
+            <img onClick={() => navigate("/diory")} src={imageUrl} />
           </SwiperSlide>
         );
       })}

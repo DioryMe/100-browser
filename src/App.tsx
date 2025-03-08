@@ -8,7 +8,8 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<DiorySwipes />} />
+        <Route path="/" element={<Navigate replace to="/content" />} />
+        <Route path="/diory" element={<DiorySwipes />} />
         <Route
           path="/content"
           element={
