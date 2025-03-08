@@ -1,6 +1,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-// import { styles } from "./ContentSwipes.module.css";
+import styles from "./ContentSwipes.module.css";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +20,9 @@ const ContentSwipes = () => {
       {[url, url2, url3].map((imageUrl, i) => {
         return (
           <SwiperSlide key={i}>
-            <img onClick={() => navigate("/diory")} src={imageUrl} />
+            <div className={styles.fullImage}>
+              <img onClick={() => navigate("/diory")} src={imageUrl} />
+            </div>
           </SwiperSlide>
         );
       })}
