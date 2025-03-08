@@ -21,11 +21,18 @@ const DiorySwipes = () => {
   return (
     <div className={styles.container}>
       <div className={styles.headerContainer}>
-        <div>
+        {/* <div className={styles.headerSquare}> */}
+        <div
+          style={{ width: "80px", height: "100%" }}
+          className={styles.headerSquare}
+        >
           <img src="https://www.svgrepo.com/download/305142/arrow-ios-back.svg" />
         </div>
         <div className={styles.headerText}>Diory 1</div>
-        <div>
+        <div
+          style={{ width: "80px", height: "100%" }}
+          className={styles.headerSquare}
+        >
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Hamburger_icon.svg/640px-Hamburger_icon.svg.png" />
         </div>
       </div>
