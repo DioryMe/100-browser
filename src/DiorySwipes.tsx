@@ -1,6 +1,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import "./DiorySwipes.module.css";
+import styles from "./DiorySwipes.module.css";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -20,14 +20,30 @@ const DiorySwipes = () => {
       {[url, url2, url3].map((imageUrl, i) => {
         return (
           <SwiperSlide key={i}>
-            <div className="flex-container column">
-              <div className="flex-item">Image123</div>
-              <div className="flex-item">
-                <div className="image-container">
-                  <img onClick={() => navigate("/content")} src={imageUrl} />
+            <div className={styles.container}>
+              <div className={styles.header}>
+                <div> -- Back</div>
+                <div>Diory 1</div>
+                <div>Hamburger</div>
+              </div>
+              <div className={styles.image}>
+                <img onClick={() => navigate("/content")} src={imageUrl} />
+              </div>
+              <div className={styles.infoSectionContainer}>
+                <div></div>
+                <div className={styles.infoContainer}>
+                  <div className={styles.infoColumn}>
+                    <div className={styles.fieldLabel}>Date:</div>
+                    <div>12.12.2012</div>
+                  </div>
+                  <div className={styles.infoColumn}>
+                    <div className={styles.fieldLabel}>Latlng:</div>
+                    <div>64.42848, 41.58833</div>
+                  </div>
                 </div>
               </div>
-              <div className="flex-item">Info</div>
+              <div></div>
+              <div></div>
             </div>
           </SwiperSlide>
         );
