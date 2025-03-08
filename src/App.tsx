@@ -6,6 +6,18 @@ import DiorySwipes from "./DiorySwipes";
 
 export const contents = [
   [
+    "https://www.publicdomainpictures.net/pictures/190000/velka/travel-background-1469438300Bbk.jpg",
+    "image",
+  ],
+  [
+    "https://lh3.ggpht.com/p/AF1QipPeoo0jUW9dEDIbO_xjN1Knn8ZNbE8x84ea9f-1=s1536",
+    "image",
+  ],
+  [
+    "https://upload.wikimedia.org/wikipedia/commons/2/21/Downtown_Tampere4.jpg",
+    "image",
+  ],
+  [
     "https://media.istockphoto.com/id/636379014/fi/valokuva/k%C3%A4det-muodostavat-syd%C3%A4men-muodon-auringonlaskun-siluetti.jpg?s=1024x1024&w=is&k=20&c=hCdUB-xdu_FwJNRUq23AfFSOKCqDQ8_eeLMaV9yup5s=",
     "image",
   ],

@@ -38,7 +38,7 @@ const DiorySwipes = () => {
                 <StorySlide
                   key={i}
                   storyImageUrl={imageUrl}
-                  images={contents.slice(0, 3).map((s) => s[0])}
+                  images={contents.slice(0, 6).map((s) => s[0])}
                 />
                 ;{/* <DiorySlide key={i} imageUrl={imageUrl} />; */}
               </SwiperSlide>
