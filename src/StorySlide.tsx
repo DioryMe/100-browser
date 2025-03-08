@@ -15,7 +15,7 @@ export const StorySlide = ({
       <div className={styles.image}>
         <img onClick={() => navigate("/content")} src={storyImageUrl} />
       </div>
-      <div className={styles.imageContainer}>
+      <div className={`${styles.imageContainer} swiper-no-swiping`}>
         {images.map((imageUrl) => (
           <img src={imageUrl} />
         ))}
