@@ -15,44 +15,50 @@ const DiorySwipes = () => {
     "https://www.worldphoto.org/sites/default/files/default-media/Piercy.jpg";
   const url3 = "http://diory-demo-content.surge.sh/demo-content.png";
 
+  const imageUrl = url2;
+
   return (
-    <Swiper className="mySwiper" speed={200} initialSlide={1}>
-      {[url, url2, url3].map((imageUrl, i) => {
-        return (
-          <SwiperSlide key={i}>
-            <div className={styles.container}>
-              <div className={styles.headerContainer}>
-                <div>
-                  <img src="https://www.svgrepo.com/download/305142/arrow-ios-back.svg" />
-                </div>
-                <div className={styles.headerText}>Diory 1</div>
-                <div>
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Hamburger_icon.svg/640px-Hamburger_icon.svg.png" />
-                </div>
-              </div>
-              <div className={styles.image}>
-                <img onClick={() => navigate("/content")} src={imageUrl} />
-              </div>
-              <div className={styles.infoSectionContainer}>
-                <div></div>
-                <div className={styles.infoContainer}>
-                  <div className={styles.infoColumn}>
-                    <div className={styles.fieldLabel}>Date:</div>
-                    <div>12.12.2012</div>
+    <div className={styles.container}>
+      <div className={styles.headerContainer}>
+        <div>
+          <img src="https://www.svgrepo.com/download/305142/arrow-ios-back.svg" />
+        </div>
+        <div className={styles.headerText}>Diory 1</div>
+        <div>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Hamburger_icon.svg/640px-Hamburger_icon.svg.png" />
+        </div>
+      </div>
+      <div className={styles.swiperContainer}>
+        <Swiper className="mySwiper" speed={200} initialSlide={1}>
+          {[url, url2, url3].map((imageUrl, i) => {
+            return (
+              <SwiperSlide key={i}>
+                <div className={styles.swiperSlideContainer}>
+                  <div className={styles.image}>
+                    <img onClick={() => navigate("/content")} src={imageUrl} />
                   </div>
-                  <div className={styles.infoColumn}>
-                    <div className={styles.fieldLabel}>Latlng:</div>
-                    <div>64.42848, 41.58833</div>
+                  <div className={styles.infoSectionContainer}>
+                    <div></div>
+                    <div className={styles.infoContainer}>
+                      <div className={styles.infoColumn}>
+                        <div className={styles.fieldLabel}>Date:</div>
+                        <div>12.12.2012</div>
+                      </div>
+                      <div className={styles.infoColumn}>
+                        <div className={styles.fieldLabel}>Latlng:</div>
+                        <div>64.42848, 41.58833</div>
+                      </div>
+                    </div>
                   </div>
+                  <div></div>
+                  <div></div>
                 </div>
-              </div>
-              <div></div>
-              <div></div>
-            </div>
-          </SwiperSlide>
-        );
-      })}
-    </Swiper>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      </div>
+    </div>
   );
 };
 
