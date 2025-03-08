@@ -3,3 +3,9 @@
   align-items: center;
   height: 95vh;
 }
+
+.grab {
+  cursor: "grab";
+  width: "100%";
+  text-align: "center";
+}
