@@ -5,7 +5,7 @@ import styles from "./DiorySwipes.module.css";
 // import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DiorySlide } from "./DiorySlide";
-import { contents, stories } from "./App";
+import { contentDiories, contents, stories } from "./App";
 
 const DiorySwipes = () => {
   const navigate = useNavigate();
@@ -33,10 +33,10 @@ const DiorySwipes = () => {
       </div>
       <div className={styles.swiperContainer}>
         <Swiper className="mySwiper" speed={200} initialSlide={1}>
-          {contents.slice(0, 3).map(([imageUrl], i) => {
+          {contentDiories.slice(0, 4).map((diory, i) => {
             return (
               <SwiperSlide>
-                <DiorySlide key={i} imageUrl={imageUrl} />;
+                <DiorySlide key={i} diory={diory} />;
               </SwiperSlide>
             );
           })}
