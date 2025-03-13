@@ -4,7 +4,7 @@ import styles from "./ContentSwipes.module.css";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { contents } from "./App";
+import { contentDiories, contents } from "./App";
 
 const ContentSwipes = () => {
   const navigate = useNavigate();
@@ -12,46 +12,24 @@ const ContentSwipes = () => {
 
   return (
     <Swiper className="mySwiper" speed={200} initialSlide={1}>
-      {contents.map(([imageUrl, type], i) => {
+      {contentDiories.map((diory, i) => {
         return (
           <SwiperSlide key={i}>
             {/* Image */}
-            {type !== "video" && (
-              <div
-                className={styles.fullImage}
-                style={{
-                  cursor: "grab",
-                }}
-              >
-                <img onClick={() => navigate("/diory")} src={imageUrl} />
-              </div>
-            )}
+            {/* {type !== "video" && ( */}
+            <div
+              className={styles.fullImage}
+              style={{
+                cursor: "grab",
+              }}
+            >
+              <img
+                onClick={() => navigate("/diory")}
+                src={diory && diory.image}
+              />
+            </div>
+            {/* )} */}
             {/* Video */}
-            {type === "video" && (
-              <>
-                {/* Swipe-handle and back button */}
-                <div
-                  onClick={() => navigate("/diory")}
-                  className={styles.grab}
-                  /* Styles are not applied via class */
-                  style={{
-                    color: "white",
-                    cursor: "grab",
-                    width: "100%",
-                    height: "20px",
-                    textAlign: "center",
-                    fontSize: "30px",
-                  }}
-                >
-                  |||
-                </div>
-                <div className={styles.fullImage}>
-                  <video controls style={{ maxHeight: "90vh", width: "100%" }}>
-                    <source src={imageUrl} />
-                  </video>
-                </div>
-              </>
-            )}
           </SwiperSlide>
         );
       })}
@@ -60,3 +38,31 @@ const ContentSwipes = () => {
 };
 
 export default ContentSwipes;
+
+// {
+//   type === "video" && (
+//     <>
+//       {/* Swipe-handle and back button */}
+//       <div
+//         onClick={() => navigate("/diory")}
+//         className={styles.grab}
+//         /* Styles are not applied via class */
+//         style={{
+//           color: "white",
+//           cursor: "grab",
+//           width: "100%",
+//           height: "20px",
+//           textAlign: "center",
+//           fontSize: "30px",
+//         }}
+//       >
+//         |||
+//       </div>
+//       <div className={styles.fullImage}>
+//         <video controls style={{ maxHeight: "90vh", width: "100%" }}>
+//           <source src={imageUrl} />
+//         </video>
+//       </div>
+//     </>
+//   );
+// }

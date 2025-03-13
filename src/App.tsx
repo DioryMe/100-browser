@@ -6,6 +6,13 @@ import DiorySwipes from "./DiorySwipes";
 import StorySwipes from "./StorySwipes";
 import StoryContentSwipes from "./StoryContentSwipes";
 
+import diograph from "../mary-json.json";
+
+export const storyDiories = [diograph["e07c2f1d-5f5a-488a-a505-34f7b9f55105"]];
+export const contentDiories = storyDiories[0].links.map(
+  (link) => diograph[link.id]
+);
+
 export const stories = [
   [
     "https://www.publicdomainpictures.net/pictures/190000/velka/travel-background-1469438300Bbk.jpg",
