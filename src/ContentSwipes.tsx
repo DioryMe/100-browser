@@ -11,7 +11,7 @@ import { getDioryInfo } from "./utils/dioryInfo";
 const diograph = new Diograph(diographJson);
 
 const ContentSwipes = () => {
-  // const [slides, setSlides] = useState<any>([]);
+  const [slides, setSlides] = useState<any>([]);
   const navigate = useNavigate();
   const { focusId } = useParams();
 
@@ -20,7 +20,7 @@ const ContentSwipes = () => {
   const linkedDiories = story.links.map((l) => diograph.getDiory({ id: l.id }));
 
   return (
-    <Swiper speed={200} initialSlide={0}>
+    <Swiper speed={200} initialSlide={1}>
       {linkedDiories.map((diory, i) => {
         return (
           <SwiperSlide key={i}>
