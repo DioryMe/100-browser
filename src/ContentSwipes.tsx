@@ -22,9 +22,8 @@ const ContentSwipes = () => {
 
   const linkedDiories = story.links.map((l) => diograph.getDiory({ id: l.id }));
 
-  console.log("linked", linkedDiories);
   return (
-    <Swiper className="mySwiper" speed={200} initialSlide={0}>
+    <Swiper speed={200} initialSlide={0}>
       {linkedDiories.map((diory, i) => {
         return (
           <SwiperSlide key={i}>

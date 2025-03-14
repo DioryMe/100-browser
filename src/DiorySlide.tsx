@@ -29,6 +29,7 @@ export const DiorySlide = ({ diory }: { diory: IDioryObject }) => {
             onClick={() => navigate(`/diory/${linkedDiory.id}`)}
           />
         ))}
+        {linkedDiories.length === 0 && "No linked diories"}
       </div>
       <div className={styles.infoSectionContainer}>
         <div></div>
