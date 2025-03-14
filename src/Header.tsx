@@ -1,9 +1,12 @@
-import { useNavigate } from "react-router-dom";
 import styles from "./Header.module.css";
+import { MouseEventHandler } from "react";
 
-const Header = () => {
-  const navigate = useNavigate();
+interface Props {
+  text: string;
+  onClick: MouseEventHandler;
+}
 
+const Header = ({ text, onClick }: Props) => {
   return (
     <div className={styles.headerContainer}>
       <div
@@ -12,8 +15,8 @@ const Header = () => {
       >
         <img src="https://www.svgrepo.com/download/305142/arrow-ios-back.svg" />
       </div>
-      <div className={styles.headerText} onClick={() => navigate("/")}>
-        My Diory
+      <div className={styles.headerText} onClick={onClick}>
+        {text}
       </div>
       <div
         className={styles.headerSquare}
