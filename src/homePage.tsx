@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { stories, storyDiories } from "./App";
+import { storyDiories } from "./App";
 import styles from "./DiorySwipes.module.css";
 
 const HomePage = () => {
