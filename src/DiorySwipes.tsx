@@ -9,6 +9,7 @@ import Header from "./Header";
 import diographJson from "../mary-json.json";
 import { Diograph } from "@diograph/diograph";
 import { useNavigate, useParams } from "react-router-dom";
+import { getDioryInfo } from "./utils/dioryInfo";
 const diograph = new Diograph(diographJson);
 
 const DiorySwipes = () => {
@@ -16,12 +17,7 @@ const DiorySwipes = () => {
   const { focusId } = useParams();
   const navigate = useNavigate();
 
-  const stories = Object.values(diograph.toObject()).filter((dioryData) =>
-    dioryData.links?.some((link) => link.id === focusId)
-  );
-
-  const story = stories[0];
-
+  const { story, focus, next, prev } = getDioryInfo(diograph, focusId);
   const linkedDiories = story.links.map((l) => diograph.getDiory({ id: l.id }));
 
   return (
