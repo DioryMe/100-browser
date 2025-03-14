@@ -3,20 +3,31 @@ import "swiper/css";
 import styles from "./ContentSwipes.module.css";
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { contentDiories, contents } from "./App";
+import { useNavigate, useParams } from "react-router-dom";
+
+import diographJson from "../mary-json.json";
+import { Diograph } from "@diograph/diograph";
+const diograph = new Diograph(diographJson);
 
 const ContentSwipes = () => {
-  const navigate = useNavigate();
   // const [slides, setSlides] = useState<any>([]);
+  const navigate = useNavigate();
+  const { focusId } = useParams();
 
+  const stories = Object.values(diograph.toObject()).filter((dioryData) =>
+    dioryData.links?.some((link) => link.id === focusId)
+  );
+
+  const story = stories[0];
+
+  const linkedDiories = story.links.map((l) => diograph.getDiory({ id: l.id }));
+
+  console.log("linked", linkedDiories);
   return (
-    <Swiper className="mySwiper" speed={200} initialSlide={1}>
-      {contentDiories.map((diory, i) => {
+    <Swiper className="mySwiper" speed={200} initialSlide={0}>
+      {linkedDiories.map((diory, i) => {
         return (
           <SwiperSlide key={i}>
-            {/* Image */}
-            {/* {type !== "video" && ( */}
             <div
               className={styles.fullImage}
               style={{
@@ -24,12 +35,10 @@ const ContentSwipes = () => {
               }}
             >
               <img
-                onClick={() => navigate("/diory")}
+                onClick={() => navigate(`/diory/${focusId}`)}
                 src={diory && diory.image}
               />
             </div>
-            {/* )} */}
-            {/* Video */}
           </SwiperSlide>
         );
       })}

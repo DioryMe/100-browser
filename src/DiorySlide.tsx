@@ -1,13 +1,34 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "./DiorySlide.module.css";
 
-export const DiorySlide = ({ diory }: { diory: any }) => {
+import diographJson from "../mary-json.json";
+import { Diograph } from "@diograph/diograph";
+import { IDioryObject } from "@diograph/diograph/types";
+const diograph = new Diograph(diographJson);
+
+export const DiorySlide = ({ diory }: { diory: IDioryObject }) => {
   const navigate = useNavigate();
+
+  const linkedDiories =
+    (diory.links && diory.links.map((l) => diograph.getDiory({ id: l.id }))) ||
+    [];
 
   return (
     <div className={styles.diorySlideContainer}>
       <div className={styles.image}>
-        <img onClick={() => navigate("/content")} src={diory.image} />
+        <img
+          onClick={() => navigate(`/diory/${diory.id}/content`)}
+          src={diory.image}
+        />
+      </div>
+      <div className={`${styles.imageContainer} swiper-no-swiping`}>
+        {linkedDiories.map((linkedDiory, i) => (
+          <img
+            key={`images-${i}`}
+            src={linkedDiory.image}
+            onClick={() => navigate(`/diory/${linkedDiory.id}`)}
+          />
+        ))}
       </div>
       <div className={styles.infoSectionContainer}>
         <div></div>

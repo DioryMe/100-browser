@@ -4,6 +4,10 @@
   height: 95vh;
 }
 
+.fullImage > img {
+  width: 100vw;
+}
+
 .grab {
   cursor: "grab";
   width: "100%";
