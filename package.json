@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.760.0",
+    "@diograph/diograph": "^0.2.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.2.0",
