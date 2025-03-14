@@ -3,39 +3,35 @@ import "swiper/css";
 import styles from "./DiorySwipes.module.css";
 
 // import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { DiorySlide } from "./DiorySlide";
-import { contentDiories, contents, stories } from "./App";
+import Header from "./Header";
+
+import diographJson from "../mary-json.json";
+import { Diograph } from "@diograph/diograph";
+import { useParams } from "react-router-dom";
+const diograph = new Diograph(diographJson);
 
 const DiorySwipes = () => {
-  const navigate = useNavigate();
   // const [slides, setSlides] = useState<any>([]);
+  const { focusId } = useParams();
 
+  const stories = Object.values(diograph.toObject()).filter((dioryData) =>
+    dioryData.links?.some((link) => link.id === focusId)
+  );
+
+  const story = stories[0];
+
+  const linkedDiories = story.links.map((l) => diograph.getDiory({ id: l.id }));
+
+  console.log("story.links", story.links);
   return (
     <div className={styles.container}>
-      <div className={styles.headerContainer}>
-        {/* <div className={styles.headerSquare}> */}
-        <div
-          style={{ width: "80px", height: "100%" }}
-          className={styles.headerSquare}
-        >
-          <img src="https://www.svgrepo.com/download/305142/arrow-ios-back.svg" />
-        </div>
-        <div className={styles.headerText} onClick={() => navigate("/story")}>
-          Story
-        </div>
-        <div
-          style={{ width: "80px", height: "100%" }}
-          className={styles.headerSquare}
-        >
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Hamburger_icon.svg/640px-Hamburger_icon.svg.png" />
-        </div>
-      </div>
+      <Header />
       <div className={styles.swiperContainer}>
-        <Swiper className="mySwiper" speed={200} initialSlide={1}>
-          {contentDiories.slice(0, 4).map((diory, i) => {
+        <Swiper className="mySwiper" speed={200} initialSlide={0}>
+          {linkedDiories.map((diory, i) => {
             return (
-              <SwiperSlide>
+              <SwiperSlide key={`swiper-slide-${i}`}>
                 <DiorySlide key={i} diory={diory} />;
               </SwiperSlide>
             );

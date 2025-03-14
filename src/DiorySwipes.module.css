@@ -2,20 +2,7 @@
   display: grid;
   grid-template-rows: 50px 90vh;
   background: white;
-}
-
-.headerContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.headerSquare {
-  /*
-  // For some reason these doesn't apply if given as class (?!!?)
-  width: "80px";
-  height: "100%";
-  */
+  color: black;
 }
 
 .swiperContainer {

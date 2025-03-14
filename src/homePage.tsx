@@ -10,7 +10,10 @@ const HomePage = () => {
       <div>My Diory</div>
       <div>
         {storyDiories[0].text}
-        <img onClick={() => navigate("/story")} src={storyDiories[0].image} />
+        <img
+          onClick={() => navigate(`/diory/${storyDiories[0].id}`)}
+          src={storyDiories[0].image}
+        />
       </div>
     </div>
   );
