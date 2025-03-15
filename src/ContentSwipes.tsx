@@ -43,7 +43,7 @@ const ContentSwipes = () => {
   };
 
   useEffect(() => {
-    const { story, next, prev } = getDioryInfo(diograph, focusId);
+    const { next, prev } = getDioryInfo(diograph, focusId);
     const newSlides = [prev, focusId, next].map((id, i) => createSlide(id, i));
     setSlides(newSlides);
     setNextDioryId(next);
@@ -63,7 +63,7 @@ const ContentSwipes = () => {
       runCallbacksOnInit={false}
       onSlidePrevTransitionStart={(swiper) => {
         if (!prevDioryId) return;
-        // navigate(`/diory/${prevDioryId}`);
+        window.history.replaceState(null, "Diory", `/diory/${prevDioryId}`);
         const {
           next: nextId,
           prev: prevId,
@@ -82,7 +82,7 @@ const ContentSwipes = () => {
       }}
       onSlideNextTransitionStart={(swiper) => {
         if (!nextDioryId) return;
-        // navigate(`/diory/${nextDioryId}`);
+        window.history.replaceState(null, "Diory", `/diory/${nextDioryId}`);
         const {
           next: nextId,
           prev: prevId,
