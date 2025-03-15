@@ -2,7 +2,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import styles from "./ContentSwipes.module.css";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import diographJson from "../mary-json.json";
@@ -11,33 +11,93 @@ import { getDioryInfo } from "./utils/dioryInfo";
 const diograph = new Diograph(diographJson);
 
 const ContentSwipes = () => {
-  const [slides, setSlides] = useState<any>([]);
-  const navigate = useNavigate();
   const { focusId } = useParams();
+  const navigate = useNavigate();
 
-  const { story, focus, next, prev } = getDioryInfo(diograph, focusId);
+  const [slides, setSlides] = useState<any>([]);
+  const [focusDioryId, setFocusDioryId] = useState<any>(null);
+  const [prevDioryId, setPrevDioryId] = useState<any>(null);
+  const [nextDioryId, setNextDioryId] = useState<any>(null);
 
-  const linkedDiories = story.links.map((l) => diograph.getDiory({ id: l.id }));
+  const [swiper, setSwiper] = useState(null);
+
+  const createSlide = (dioryId: string, i: number) => {
+    if (!dioryId) return null;
+
+    const diory = diograph.getDiory({ id: dioryId });
+    return (
+      <SwiperSlide key={i}>
+        <div
+          className={styles.fullImage}
+          style={{
+            cursor: "grab",
+          }}
+        >
+          <img
+            onClick={() => navigate(`/diory/${dioryId}`)}
+            src={diory && diory.image}
+          />
+        </div>
+      </SwiperSlide>
+    );
+  };
+
+  useEffect(() => {
+    const { story, next, prev } = getDioryInfo(diograph, focusId);
+    const newSlides = [prev, focusId, next].map((id, i) => createSlide(id, i));
+    setSlides(newSlides);
+    setNextDioryId(next);
+    setPrevDioryId(prev);
+
+    if (swiper) {
+      setTimeout(() => {
+        swiper.slideTo(swiper.activeIndex + (prev ? 1 : 0), 0, false);
+      }, 1);
+    }
+  }, [focusId, swiper]);
 
   return (
-    <Swiper speed={200}>
-      {linkedDiories.map((diory, i) => {
-        return (
-          <SwiperSlide key={i}>
-            <div
-              className={styles.fullImage}
-              style={{
-                cursor: "grab",
-              }}
-            >
-              <img
-                onClick={() => navigate(`/diory/${focusId}`)}
-                src={diory && diory.image}
-              />
-            </div>
-          </SwiperSlide>
-        );
-      })}
+    <Swiper
+      onSwiper={setSwiper}
+      speed={200}
+      runCallbacksOnInit={false}
+      onSlidePrevTransitionStart={(swiper) => {
+        if (!prevDioryId) return;
+        // navigate(`/diory/${prevDioryId}`);
+        const {
+          next: nextId,
+          prev: prevId,
+          focusId,
+        } = getDioryInfo(diograph, prevDioryId);
+        setPrevDioryId(prevId);
+        setNextDioryId(nextId);
+        setFocusDioryId(focusId);
+        if (prevId) {
+          const prevSlide = createSlide(prevId, Date.now());
+          setSlides((slides) => [prevSlide, ...slides]);
+          setTimeout(() => {
+            swiper.slideTo(swiper.activeIndex + 1, 0, false);
+          }, 1);
+        }
+      }}
+      onSlideNextTransitionStart={(swiper) => {
+        if (!nextDioryId) return;
+        // navigate(`/diory/${nextDioryId}`);
+        const {
+          next: nextId,
+          prev: prevId,
+          focusId,
+        } = getDioryInfo(diograph, nextDioryId);
+        setPrevDioryId(prevId);
+        setNextDioryId(nextId);
+        setFocusDioryId(focusId);
+        if (nextId) {
+          const nextSlide = createSlide(nextId, Date.now());
+          setSlides((slides) => [...slides, nextSlide]);
+        }
+      }}
+    >
+      {slides}
     </Swiper>
   );
 };
