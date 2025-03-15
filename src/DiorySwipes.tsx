@@ -45,7 +45,7 @@ const DiorySwipes = () => {
 
     if (swiper) {
       setTimeout(() => {
-        swiper.slideTo(swiper.activeIndex + (prev ? 1 : 0), 0);
+        swiper.slideTo(swiper.activeIndex + (prev ? 1 : 0), 0, false);
       }, 1);
     }
   }, [focusId, swiper]);
