@@ -9,8 +9,8 @@ import diographJson from "../mary-json.json";
 import { Diograph } from "@diograph/diograph";
 import { useNavigate, useParams } from "react-router-dom";
 import { getDioryInfo } from "./utils/dioryInfo";
-import { useEffect, useState } from "react";
-import { HashNavigation } from "swiper/modules";
+import { useEffect, useRef, useState } from "react";
+// import { HashNavigation } from "swiper/modules";
 const diograph = new Diograph(diographJson);
 
 const createSlide = (dioryId: string, i: number) => {
@@ -36,14 +36,23 @@ const DiorySwipes = () => {
   const [nextDioryId, setNextDioryId] = useState<any>(null);
   const [storyDiory, setStoryDiory] = useState<any>(null);
 
+  const [swiper, setSwiper] = useState(null);
+
   useEffect(() => {
+    console.log("new");
     const { story, next, prev } = getDioryInfo(diograph, focusId);
     const newSlides = [prev, focusId, next].map((id, i) => createSlide(id, i));
     setSlides(newSlides);
     setNextDioryId(next);
     setPrevDioryId(prev);
     setStoryDiory(story);
-  }, [focusId]);
+
+    if (swiper) {
+      setTimeout(() => {
+        swiper.slideTo(swiper.activeIndex + 1, 0);
+      }, 1);
+    }
+  }, [focusId, swiper]);
 
   console.log("slide", slides);
   return (
@@ -57,11 +66,12 @@ const DiorySwipes = () => {
         />
         <div className={styles.swiperContainer}>
           <Swiper
-            modules={[HashNavigation]}
+            onSwiper={setSwiper}
+            // modules={[HashNavigation]}
             speed={200}
-            hashNavigation={{ watchState: true }}
+            // hashNavigation={{ watchState: true }}
             runCallbacksOnInit={false}
-            initialSlide={prevDioryId ? 1 : 0}
+            // initialSlide={prevDioryId ? 1 : 0}
             onSlidePrevTransitionStart={(swiper) => {
               if (!prevDioryId) return;
               // navigate(`/diory/${prevDioryId}`);
