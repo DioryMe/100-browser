@@ -13,8 +13,10 @@ import { getDioryInfo } from "./utils/dioryInfo";
 import { useEffect, useState } from "react";
 const diograph = new Diograph(diographJson);
 
-const getSlide = (dioryId: string, i: number) => {
+const createSlide = (dioryId: string, i: number) => {
+  console.log("triggered");
   if (!dioryId) return null;
+  console.log("dioryId", dioryId);
 
   const diory = diograph.getDiory({ id: dioryId });
   return (
@@ -28,46 +30,48 @@ const DiorySwipes = () => {
   const { focusId } = useParams();
   const navigate = useNavigate();
 
-  const { story, focus, next, prev } = getDioryInfo(diograph, focusId);
-  const linkedDiories = story.links.map((l) => diograph.getDiory({ id: l.id }));
-
   const [slides, setSlides] = useState<any>([]);
+  const [prevDioryId, setPrevDioryId] = useState<any>(null);
+  const [nextDioryId, setNextDioryId] = useState<any>(null);
+  const [storyDiory, setStoryDiory] = useState<any>(null);
 
   useEffect(() => {
-    const newSlides = [prev, focusId, next].map((id, i) => getSlide(id, i));
+    const { story, next, prev } = getDioryInfo(diograph, focusId);
+    const newSlides = [prev, focusId, next].map((id, i) => createSlide(id, i));
+    console.log(JSON.stringify({ storyId: story.id, focusId, next, prev }));
     setSlides(newSlides);
+    setNextDioryId(next);
+    setPrevDioryId(prev);
+    setStoryDiory(story);
   }, [focusId]);
 
+  console.log("slide", slides);
   return (
-    <div className={styles.container}>
-      <Header
-        text={story.text}
-        onClick={() => navigate(story.id === "/" ? "/" : `/diory/${story.id}`)}
-      />
-      <div className={styles.swiperContainer}>
-        <Swiper
-          speed={200}
-          initialSlide={0}
-          onSlidePrevTransitionStart={() => {
-            console.log("slie prev");
-            navigate(`/diory/${prev}`);
-          }}
-          onSlideNextTransitionStart={() => {
-            console.log("slie next");
-            navigate(`/diory/${next}`);
-          }}
-        >
-          {slides}
-          {/* {linkedDiories.map((diory, i) => {
-            return (
-              <SwiperSlide key={`swiper-slide-${i}`}>
-                <DiorySlide key={i} diory={diory} />;
-              </SwiperSlide>
-            );
-          })} */}
-        </Swiper>
+    storyDiory && (
+      <div className={styles.container}>
+        <Header
+          text={storyDiory.text}
+          onClick={() =>
+            navigate(storyDiory.id === "/" ? "/" : `/diory/${storyDiory.id}`)
+          }
+        />
+        <div className={styles.swiperContainer}>
+          <Swiper
+            speed={200}
+            initialSlide={1}
+            runCallbacksOnInit={false}
+            onSlidePrevTransitionStart={(swiper) => {
+              navigate(`/diory/${prevDioryId}`);
+            }}
+            onSlideNextTransitionStart={(swiper) => {
+              navigate(`/diory/${nextDioryId}`);
+            }}
+          >
+            {slides}
+          </Swiper>
+        </div>
       </div>
-    </div>
+    )
   );
 };
 
