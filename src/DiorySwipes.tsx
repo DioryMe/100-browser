@@ -11,6 +11,7 @@ import { Diograph } from "@diograph/diograph";
 import { useNavigate, useParams } from "react-router-dom";
 import { getDioryInfo } from "./utils/dioryInfo";
 import { useEffect, useState } from "react";
+import { HashNavigation } from "swiper/modules";
 const diograph = new Diograph(diographJson);
 
 const createSlide = (dioryId: string, i: number) => {
@@ -20,11 +21,26 @@ const createSlide = (dioryId: string, i: number) => {
 
   const diory = diograph.getDiory({ id: dioryId });
   return (
-    <SwiperSlide key={`swiper-slide-${i}`}>
+    <SwiperSlide key={`swiper-slide-${i}`} data-hash={dioryId}>
       <DiorySlide key={i} diory={diory} />;
     </SwiperSlide>
   );
 };
+
+{
+  /* <Swiper
+  modules={[HashNavigation]}
+  hashNavigation={{ watchState: true }}
+  initialSlide={
+    window.location.hash
+      ? parseInt(window.location.hash.replace("#slide", "")) - 1
+      : 0
+  }
+>
+  <SwiperSlide data-hash="slide1">Slide 1</SwiperSlide>
+  <SwiperSlide data-hash="slide2">Slide 2</SwiperSlide>
+</Swiper>; */
+}
 
 const DiorySwipes = () => {
   const { focusId } = useParams();
@@ -57,14 +73,30 @@ const DiorySwipes = () => {
         />
         <div className={styles.swiperContainer}>
           <Swiper
+            modules={[HashNavigation]}
             speed={200}
-            initialSlide={1}
+            hashNavigation={{ watchState: true }}
             runCallbacksOnInit={false}
+            initialSlide={prevDioryId ? 1 : 0}
             onSlidePrevTransitionStart={(swiper) => {
-              navigate(`/diory/${prevDioryId}`);
+              if (!prevDioryId) return;
+              const prevId = getDioryInfo(diograph, prevDioryId).prev;
+              if (prevId) {
+                const prevSlide = createSlide(prevId, Date.now());
+                setSlides((slides) => {
+                  return [prevSlide].concat(slides);
+                });
+              }
             }}
             onSlideNextTransitionStart={(swiper) => {
-              navigate(`/diory/${nextDioryId}`);
+              if (!nextDioryId) return;
+              const nextId = getDioryInfo(diograph, nextDioryId).next;
+              if (nextId) {
+                const nextSlide = createSlide(nextId, Date.now());
+                setSlides((slides) => {
+                  return slides.concat([nextSlide]);
+                });
+              }
             }}
           >
             {slides}
