@@ -66,7 +66,12 @@ const DiorySwipes = () => {
             runCallbacksOnInit={false}
             onSlidePrevTransitionStart={(swiper) => {
               if (!prevDioryId) return;
-              // navigate(`/diory/${prevDioryId}`);
+              window.history.replaceState(
+                null,
+                "Diory",
+                `/diory/${prevDioryId}`
+              );
+
               const {
                 next: nextId,
                 prev: prevId,
@@ -85,7 +90,11 @@ const DiorySwipes = () => {
             }}
             onSlideNextTransitionStart={(swiper) => {
               if (!nextDioryId) return;
-              // navigate(`/diory/${nextDioryId}`);
+              window.history.replaceState(
+                null,
+                "Diory",
+                `/diory/${nextDioryId}`
+              );
               const {
                 next: nextId,
                 prev: prevId,
