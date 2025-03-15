@@ -47,6 +47,7 @@ const DiorySwipes = () => {
   const navigate = useNavigate();
 
   const [slides, setSlides] = useState<any>([]);
+  const [focusDioryId, setFocusDioryId] = useState<any>(null);
   const [prevDioryId, setPrevDioryId] = useState<any>(null);
   const [nextDioryId, setNextDioryId] = useState<any>(null);
   const [storyDiory, setStoryDiory] = useState<any>(null);
@@ -59,7 +60,7 @@ const DiorySwipes = () => {
     setNextDioryId(next);
     setPrevDioryId(prev);
     setStoryDiory(story);
-  }, [focusId]);
+  }, []);
 
   console.log("slide", slides);
   return (
@@ -81,22 +82,32 @@ const DiorySwipes = () => {
             onSlidePrevTransitionStart={(swiper) => {
               if (!prevDioryId) return;
               const prevId = getDioryInfo(diograph, prevDioryId).prev;
+              setPrevDioryId(prevId);
               if (prevId) {
                 const prevSlide = createSlide(prevId, Date.now());
                 setSlides((slides) => {
                   return [prevSlide].concat(slides);
                 });
               }
+              navigate(`/diory/${prevDioryId}`);
             }}
             onSlideNextTransitionStart={(swiper) => {
               if (!nextDioryId) return;
-              const nextId = getDioryInfo(diograph, nextDioryId).next;
+              const {
+                next: nextId,
+                prev: prevId,
+                focusId,
+              } = getDioryInfo(diograph, nextDioryId);
+              setPrevDioryId(prevId);
+              setNextDioryId(nextId);
+              setFocusDioryId(focusId);
               if (nextId) {
                 const nextSlide = createSlide(nextId, Date.now());
                 setSlides((slides) => {
                   return slides.concat([nextSlide]);
                 });
               }
+              navigate(`/diory/${nextDioryId}`);
             }}
           >
             {slides}
