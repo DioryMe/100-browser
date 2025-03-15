@@ -9,14 +9,11 @@ import diographJson from "../mary-json.json";
 import { Diograph } from "@diograph/diograph";
 import { useNavigate, useParams } from "react-router-dom";
 import { getDioryInfo } from "./utils/dioryInfo";
-import { useEffect, useRef, useState } from "react";
-// import { HashNavigation } from "swiper/modules";
+import { useEffect, useState } from "react";
 const diograph = new Diograph(diographJson);
 
 const createSlide = (dioryId: string, i: number) => {
-  console.log("triggered");
   if (!dioryId) return null;
-  console.log("dioryId", dioryId);
 
   const diory = diograph.getDiory({ id: dioryId });
   return (
@@ -39,7 +36,6 @@ const DiorySwipes = () => {
   const [swiper, setSwiper] = useState(null);
 
   useEffect(() => {
-    console.log("new");
     const { story, next, prev } = getDioryInfo(diograph, focusId);
     const newSlides = [prev, focusId, next].map((id, i) => createSlide(id, i));
     setSlides(newSlides);
@@ -49,12 +45,11 @@ const DiorySwipes = () => {
 
     if (swiper) {
       setTimeout(() => {
-        swiper.slideTo(swiper.activeIndex + 1, 0);
+        swiper.slideTo(swiper.activeIndex + (prev ? 1 : 0), 0);
       }, 1);
     }
   }, [focusId, swiper]);
 
-  console.log("slide", slides);
   return (
     storyDiory && (
       <div className={styles.container}>
@@ -67,11 +62,8 @@ const DiorySwipes = () => {
         <div className={styles.swiperContainer}>
           <Swiper
             onSwiper={setSwiper}
-            // modules={[HashNavigation]}
             speed={200}
-            // hashNavigation={{ watchState: true }}
             runCallbacksOnInit={false}
-            // initialSlide={prevDioryId ? 1 : 0}
             onSlidePrevTransitionStart={(swiper) => {
               if (!prevDioryId) return;
               // navigate(`/diory/${prevDioryId}`);
@@ -87,8 +79,8 @@ const DiorySwipes = () => {
                 const prevSlide = createSlide(prevId, Date.now());
                 setSlides((slides) => [prevSlide, ...slides]);
                 setTimeout(() => {
-                  swiper.slideTo(swiper.activeIndex + 1, 0);
-                }, 0);
+                  swiper.slideTo(swiper.activeIndex + 1, 0, false);
+                }, 1);
               }
             }}
             onSlideNextTransitionStart={(swiper) => {
