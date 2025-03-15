@@ -60,7 +60,7 @@ const DiorySwipes = () => {
     setNextDioryId(next);
     setPrevDioryId(prev);
     setStoryDiory(story);
-  }, []);
+  }, [focusId]);
 
   console.log("slide", slides);
   return (
@@ -80,19 +80,39 @@ const DiorySwipes = () => {
             runCallbacksOnInit={false}
             initialSlide={prevDioryId ? 1 : 0}
             onSlidePrevTransitionStart={(swiper) => {
+              // if (!prevDioryId) return;
+              // const prevId = getDioryInfo(diograph, prevDioryId).prev;
+              // setPrevDioryId(prevId);
+              // if (prevId) {
+              //   const prevSlide = createSlide(prevId, Date.now());
+              //   setSlides((slides) => {
+              //     return [prevSlide].concat(slides);
+              //   });
+              // }
+              // navigate(`/diory/${prevDioryId}`);
               if (!prevDioryId) return;
-              const prevId = getDioryInfo(diograph, prevDioryId).prev;
+              navigate(`/diory/${prevDioryId}`);
+              const {
+                next: nextId,
+                prev: prevId,
+                focusId,
+              } = getDioryInfo(diograph, prevDioryId);
               setPrevDioryId(prevId);
+              setNextDioryId(nextId);
+              setFocusDioryId(focusId);
               if (prevId) {
                 const prevSlide = createSlide(prevId, Date.now());
                 setSlides((slides) => {
                   return [prevSlide].concat(slides);
                 });
+                setTimeout(() => {
+                  swiper.slideTo(swiper.activeIndex + 1, 0);
+                }, 0);
               }
-              navigate(`/diory/${prevDioryId}`);
             }}
             onSlideNextTransitionStart={(swiper) => {
               if (!nextDioryId) return;
+              navigate(`/diory/${nextDioryId}`);
               const {
                 next: nextId,
                 prev: prevId,
@@ -107,7 +127,6 @@ const DiorySwipes = () => {
                   return slides.concat([nextSlide]);
                 });
               }
-              navigate(`/diory/${nextDioryId}`);
             }}
           >
             {slides}
