@@ -1,10 +1,10 @@
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Swiper } from "swiper/react";
 import "swiper/css";
 import styles from "./DiorySwipes.module.css";
 
 import diographJson from "../mary-json.json";
 import { Diograph } from "@diograph/diograph";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getDioryInfo } from "./utils/dioryInfo";
 import { ReactNode, useEffect, useState } from "react";
 import { IDioryObject } from "@diograph/diograph/types";
@@ -16,10 +16,8 @@ interface Props {
 
 const DiorySwiper = ({ createSlide }: Props) => {
   const { focusId } = useParams();
-  const navigate = useNavigate();
 
   const [slides, setSlides] = useState<string[]>([]);
-  const [focusDioryId, setFocusDioryId] = useState<any>(null);
   const [prevDioryId, setPrevDioryId] = useState<any>(null);
   const [nextDioryId, setNextDioryId] = useState<any>(null);
   const [storyDiory, setStoryDiory] = useState<any>(null);
@@ -52,14 +50,12 @@ const DiorySwiper = ({ createSlide }: Props) => {
             if (!prevDioryId) return;
             window.history.replaceState(null, "Diory", `/diory/${prevDioryId}`);
 
-            const {
-              next: nextId,
-              prev: prevId,
-              focusId,
-            } = getDioryInfo(diograph, prevDioryId);
+            const { next: nextId, prev: prevId } = getDioryInfo(
+              diograph,
+              prevDioryId
+            );
             setPrevDioryId(prevId);
             setNextDioryId(nextId);
-            setFocusDioryId(focusId);
             if (prevId && !slides.includes(prevId)) {
               setSlides((slides) => [prevId, ...slides]);
               setTimeout(() => {
@@ -70,14 +66,13 @@ const DiorySwiper = ({ createSlide }: Props) => {
           onSlideNextTransitionStart={(swiper) => {
             if (!nextDioryId) return;
             window.history.replaceState(null, "Diory", `/diory/${nextDioryId}`);
-            const {
-              next: nextId,
-              prev: prevId,
-              focusId,
-            } = getDioryInfo(diograph, nextDioryId);
+            const { next: nextId, prev: prevId } = getDioryInfo(
+              diograph,
+              nextDioryId
+            );
             setPrevDioryId(prevId);
             setNextDioryId(nextId);
-            setFocusDioryId(focusId);
+
             if (nextId && !slides.includes(nextId)) {
               setSlides((slides) => [...slides, nextId]);
             }
