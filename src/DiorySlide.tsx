@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styles from "./DiorySlide.module.css";
 
 import diographJson from "../mary-json.json";
