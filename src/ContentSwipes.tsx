@@ -1,105 +1,23 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import styles from "./ContentSwipes.module.css";
+import { IDioryObject } from "@diograph/diograph/types";
+import { useNavigate } from "react-router-dom";
+import DiorySwiper from "./DiorySwiper";
+import { ContentSlide } from "./ContentSlide";
 
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-
-import diographJson from "../mary-json.json";
-import { Diograph } from "@diograph/diograph";
-import { getDioryInfo } from "./utils/dioryInfo";
-const diograph = new Diograph(diographJson);
-
-const ContentSwipes = () => {
-  const { focusId } = useParams();
-  const navigate = useNavigate();
-
-  const [slides, setSlides] = useState<any>([]);
-  const [focusDioryId, setFocusDioryId] = useState<any>(null);
-  const [prevDioryId, setPrevDioryId] = useState<any>(null);
-  const [nextDioryId, setNextDioryId] = useState<any>(null);
-
-  const [swiper, setSwiper] = useState(null);
-
-  const createSlide = (dioryId: string, i: number) => {
-    if (!dioryId) return null;
-
-    const diory = diograph.getDiory({ id: dioryId });
-    return (
-      <SwiperSlide key={i}>
-        <div
-          className={styles.fullImage}
-          style={{
-            cursor: "grab",
-          }}
-        >
-          <img
-            onClick={() => navigate(`/diory/${dioryId}`)}
-            src={diory && diory.image}
-          />
-        </div>
-      </SwiperSlide>
-    );
-  };
-
-  useEffect(() => {
-    const { next, prev } = getDioryInfo(diograph, focusId);
-    const newSlides = [prev, focusId, next].map((id, i) => createSlide(id, i));
-    setSlides(newSlides);
-    setNextDioryId(next);
-    setPrevDioryId(prev);
-
-    if (swiper) {
-      setTimeout(() => {
-        swiper.slideTo(swiper.activeIndex + (prev ? 1 : 0), 0, false);
-      }, 1);
-    }
-  }, [focusId, swiper]);
+const createContentSlide = (diory: IDioryObject, key: number) => {
+  if (!diory) return null;
 
   return (
-    <Swiper
-      onSwiper={setSwiper}
-      speed={200}
-      runCallbacksOnInit={false}
-      onSlidePrevTransitionStart={(swiper) => {
-        if (!prevDioryId) return;
-        window.history.replaceState(null, "Diory", `/diory/${prevDioryId}`);
-        const {
-          next: nextId,
-          prev: prevId,
-          focusId,
-        } = getDioryInfo(diograph, prevDioryId);
-        setPrevDioryId(prevId);
-        setNextDioryId(nextId);
-        setFocusDioryId(focusId);
-        if (prevId) {
-          const prevSlide = createSlide(prevId, Date.now());
-          setSlides((slides) => [prevSlide, ...slides]);
-          setTimeout(() => {
-            swiper.slideTo(swiper.activeIndex + 1, 0, false);
-          }, 1);
-        }
-      }}
-      onSlideNextTransitionStart={(swiper) => {
-        if (!nextDioryId) return;
-        window.history.replaceState(null, "Diory", `/diory/${nextDioryId}`);
-        const {
-          next: nextId,
-          prev: prevId,
-          focusId,
-        } = getDioryInfo(diograph, nextDioryId);
-        setPrevDioryId(prevId);
-        setNextDioryId(nextId);
-        setFocusDioryId(focusId);
-        if (nextId) {
-          const nextSlide = createSlide(nextId, Date.now());
-          setSlides((slides) => [...slides, nextSlide]);
-        }
-      }}
-    >
-      {slides}
-    </Swiper>
+    <SwiperSlide key={key}>
+      <ContentSlide diory={diory} />
+    </SwiperSlide>
   );
+};
+
+const ContentSwipes = () => {
+  return <DiorySwiper createSlide={createContentSlide} />;
 };
 
 export default ContentSwipes;
