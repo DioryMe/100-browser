@@ -6,7 +6,7 @@ import { useDiosphereContext } from "./DiosphereContext";
 
 export const DiorySlide = ({ diory }: { diory: IDioryObject }) => {
   const navigate = useNavigate();
-  const diograph = useDiosphereContext();
+  const { diograph } = useDiosphereContext();
 
   const linkedDiories =
     (diory.links && diory.links.map((l) => diograph.getDiory({ id: l.id }))) ||
