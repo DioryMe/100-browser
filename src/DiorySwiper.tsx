@@ -2,13 +2,11 @@ import { Swiper } from "swiper/react";
 import "swiper/css";
 import styles from "./DiorySwipes.module.css";
 
-import diographJson from "../mary-json.json";
-import { Diograph } from "@diograph/diograph";
 import { useParams } from "react-router-dom";
 import { getDioryInfo } from "./utils/dioryInfo";
 import { ReactNode, useEffect, useState } from "react";
 import { IDiory, IDioryObject } from "@diograph/diograph/types";
-const diograph = new Diograph(diographJson);
+import { useDiosphereContext } from "./DiosphereContext";
 
 interface Props {
   createSlide: (diory: IDioryObject, key: number) => ReactNode;
@@ -16,6 +14,7 @@ interface Props {
 
 const DiorySwiper = ({ createSlide }: Props) => {
   const { focusId } = useParams();
+  const diograph = useDiosphereContext();
 
   const [slides, setSlides] = useState<string[]>([]);
   const [prevDioryId, setPrevDioryId] = useState<string>(null);
