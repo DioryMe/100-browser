@@ -1,11 +1,38 @@
-import { createContext, ReactNode, useContext } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import diographJson from "../mary-json.json";
 import { Diograph } from "@diograph/diograph";
+import { HttpClient } from "@diograph/http-client";
+import { validateDiograph } from "@diograph/diograph/validator";
 const diograph = new Diograph(diographJson);
+
+const loadDiographJson = async () => {
+  const httpClient = new HttpClient("http://diory-demo-content.surge.sh");
+  const diographContents = await httpClient.readTextItem("diograph.json");
+
+  const diograph = JSON.parse(diographContents);
+  validateDiograph(diograph);
+
+  return diograph;
+};
 
 const DiosphereContext = createContext<any>(diograph);
 
 export function DiosphereProvider({ children }: { children?: ReactNode }) {
+  const [diograph, setDiograph] = useState<Diograph | null>(null);
+
+  // My Diory diograph
+  useEffect(() => {
+    loadDiographJson().then((diographJson) => {
+      setDiograph(new Diograph(diographJson));
+    });
+  }, []);
+
   return (
     <DiosphereContext.Provider value={diograph}>
       {children}
