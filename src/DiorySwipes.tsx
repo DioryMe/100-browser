@@ -8,7 +8,6 @@ import Header from "./Header";
 import diographJson from "../mary-json.json";
 import { Diograph } from "@diograph/diograph";
 import { useNavigate, useParams } from "react-router-dom";
-import { getDioryInfo } from "./utils/dioryInfo";
 import { useEffect, useState } from "react";
 import DiorySwiper from "./DiorySwiper";
 import { IDioryObject } from "@diograph/diograph/types";
@@ -25,15 +24,14 @@ const createDiorySlide = (diory: IDioryObject, key: number) => {
 };
 
 const DiorySwipes = () => {
-  // const { focusId } = useParams();
   const navigate = useNavigate();
-
+  // const { focusId } = useParams();
   // const [storyDiory, setStoryDiory] = useState<any>(null);
-
+  //
   // useEffect(() => {
-
+  //
   //   setStoryDiory(story);
-
+  //
   //   if (swiper) {
   //     setTimeout(() => {
   //       swiper.slideTo(swiper.activeIndex + (prev ? 1 : 0), 0, false);
