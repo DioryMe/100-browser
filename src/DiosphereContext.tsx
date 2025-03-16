@@ -8,6 +8,7 @@ import {
 import { Diograph } from "@diograph/diograph";
 import { HttpClient } from "@diograph/http-client";
 import { validateDiograph } from "@diograph/diograph/validator";
+import { IDiory } from "@diograph/diograph/types";
 
 const loadDiographJson = async () => {
   const httpClient = new HttpClient("http://diory-demo-content.surge.sh");
@@ -19,12 +20,18 @@ const loadDiographJson = async () => {
   return diograph;
 };
 
-const DiosphereContext = createContext<Diograph | null>(null);
+interface DiosphereContextType {
+  diograph: Diograph | null;
+  storyDiory: IDiory;
+  setStoryDiory: React.Dispatch<React.SetStateAction<IDiory>>;
+}
+
+const DiosphereContext = createContext<DiosphereContextType>(null);
 
 export function DiosphereProvider({ children }: { children?: ReactNode }) {
   const [diograph, setDiograph] = useState<Diograph | null>(null);
+  const [storyDiory, setStoryDiory] = useState<IDiory | null>(null);
 
-  // My Diory diograph
   useEffect(() => {
     loadDiographJson().then((diographJson) => {
       setDiograph(new Diograph(diographJson));
@@ -32,7 +39,13 @@ export function DiosphereProvider({ children }: { children?: ReactNode }) {
   }, []);
 
   return (
-    <DiosphereContext.Provider value={diograph}>
+    <DiosphereContext.Provider
+      value={{
+        diograph,
+        setStoryDiory,
+        storyDiory,
+      }}
+    >
       {children}
     </DiosphereContext.Provider>
   );
