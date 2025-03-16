@@ -24,19 +24,21 @@ const DiorySwiper = ({ createSlide }: Props) => {
   const [swiper, setSwiper] = useState(null);
 
   useEffect(() => {
-    const { story, next, prev } = getDioryInfo(diograph, focusId);
-    const newSlides = [prev, focusId, next];
-    setSlides(newSlides);
-    setNextDioryId(next);
-    setPrevDioryId(prev);
-    setStoryDiory(story);
+    if (diograph) {
+      const { story, next, prev } = getDioryInfo(diograph, focusId);
+      const newSlides = [prev, focusId, next];
+      setSlides(newSlides);
+      setNextDioryId(next);
+      setPrevDioryId(prev);
+      setStoryDiory(story);
 
-    if (swiper) {
-      setTimeout(() => {
-        swiper.slideTo(swiper.activeIndex + (prev ? 1 : 0), 0, false);
-      }, 1);
+      if (swiper) {
+        setTimeout(() => {
+          swiper.slideTo(swiper.activeIndex + (prev ? 1 : 0), 0, false);
+        }, 1);
+      }
     }
-  }, [focusId, swiper]);
+  }, [focusId, swiper, diograph]);
 
   return (
     storyDiory && (
