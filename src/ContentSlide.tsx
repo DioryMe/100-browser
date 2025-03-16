@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import styles from "./DiorySlide.module.css";
+import styles from "./ContentSwipes.module.css";
 import { IDioryObject } from "@diograph/diograph/types";
 
 export const ContentSlide = ({ diory }: { diory: IDioryObject }) => {
