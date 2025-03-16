@@ -1,13 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./DiorySlide.module.css";
 
-import diographJson from "../mary-json.json";
-import { Diograph } from "@diograph/diograph";
 import { IDioryObject } from "@diograph/diograph/types";
-const diograph = new Diograph(diographJson);
+import { useDiosphereContext } from "./DiosphereContext";
 
 export const DiorySlide = ({ diory }: { diory: IDioryObject }) => {
   const navigate = useNavigate();
+  const diograph = useDiosphereContext();
 
   const linkedDiories =
     (diory.links && diory.links.map((l) => diograph.getDiory({ id: l.id }))) ||
