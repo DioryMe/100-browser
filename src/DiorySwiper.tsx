@@ -22,8 +22,9 @@ const DiorySwiper = ({ createSlide }: Props) => {
 
   const [swiper, setSwiper] = useState(null);
 
+  // On route load or when navigating via link from other page
   useEffect(() => {
-    if (diograph) {
+    if (diograph && focusId) {
       const { story, next, prev } = getDioryInfo(diograph, focusId);
       const newSlides = [prev, focusId, next];
       setSlides(newSlides);
@@ -44,6 +45,11 @@ const DiorySwiper = ({ createSlide }: Props) => {
           onSwiper={setSwiper}
           speed={200}
           runCallbacksOnInit={false}
+          // On swipe back on Diory or Content views
+          // - do nothing if you can't swipe to next
+          // - update url to indicate focus change
+          // - retrieve next diory's diory info and update the state
+          // - add slide if there is next diory doesn't exist yet
           onSlidePrevTransitionStart={(swiper) => {
             if (!prevDioryId) return;
             window.history.replaceState(null, "Diory", `/diory/${prevDioryId}`);
@@ -59,12 +65,17 @@ const DiorySwiper = ({ createSlide }: Props) => {
 
             if (prevId && !slides.includes(prevId)) {
               setSlides((slides) => [prevId, ...slides]);
+              // After adding slide in the beginning we need to recalibrate the activeIndex
               swiper.slideTo(swiper.activeIndex + 1, 0, false);
             }
           }}
+          // On swipe next on Diory or Content views
+          // - almost same as swipe back
           onSlideNextTransitionStart={(swiper) => {
             if (!nextDioryId) return;
+
             window.history.replaceState(null, "Diory", `/diory/${nextDioryId}`);
+
             const {
               next: nextId,
               prev: prevId,

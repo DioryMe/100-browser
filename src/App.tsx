@@ -5,13 +5,8 @@ import ContentSwipes from "./ContentSwipes";
 import DiorySwipes from "./DiorySwipes";
 import { DiosphereProvider } from "./DiosphereContext";
 
-import diograph from "../mary-json.json";
-export const storyDiories = [diograph["e07c2f1d-5f5a-488a-a505-34f7b9f55105"]];
-export const contentDiories = storyDiories[0].links.map(
-  (link) => diograph[link.id]
-);
-
 const App = () => {
+  // NOTE: The whole app re-renders when context changes
   return (
     <DiosphereProvider>
       <BrowserRouter>
