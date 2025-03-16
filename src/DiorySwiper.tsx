@@ -33,7 +33,7 @@ const DiorySwiper = ({ createSlide }: Props) => {
 
       if (swiper) {
         setTimeout(() => {
-          swiper.slideTo(swiper.activeIndex + (prev ? 1 : 0), 0, false);
+          swiper.slideTo(prev ? 1 : 0, 0, false);
         }, 1);
       }
     }
