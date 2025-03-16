@@ -34,8 +34,12 @@ export const DiorySlide = ({ diory }: { diory: IDioryObject }) => {
         <div></div>
         <div className={styles.infoContainer}>
           <div className={styles.infoColumn}>
+            <div className={styles.fieldLabel}>Text:</div>
+            <div>{diory.text || "-"}</div>
+          </div>
+          <div className={styles.infoColumn}>
             <div className={styles.fieldLabel}>Date:</div>
-            <div>{diory.date || "12.12.2012"}</div>
+            <div>{diory.date || "-" || "12.12.2012"}</div>
           </div>
           <div className={styles.infoColumn}>
             <div className={styles.fieldLabel}>Latlng:</div>
