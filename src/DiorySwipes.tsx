@@ -5,13 +5,10 @@ import styles from "./DiorySwipes.module.css";
 import { DiorySlide } from "./DiorySlide";
 import Header from "./Header";
 
-import diographJson from "../mary-json.json";
-import { Diograph } from "@diograph/diograph";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import DiorySwiper from "./DiorySwiper";
 import { IDioryObject } from "@diograph/diograph/types";
-const diograph = new Diograph(diographJson);
 
 const createDiorySlide = (diory: IDioryObject, key: number) => {
   if (!diory) return null;

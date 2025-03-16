@@ -5,11 +5,9 @@ import {
   useEffect,
   useState,
 } from "react";
-import diographJson from "../mary-json.json";
 import { Diograph } from "@diograph/diograph";
 import { HttpClient } from "@diograph/http-client";
 import { validateDiograph } from "@diograph/diograph/validator";
-const diograph = new Diograph(diographJson);
 
 const loadDiographJson = async () => {
   const httpClient = new HttpClient("http://diory-demo-content.surge.sh");
@@ -21,7 +19,7 @@ const loadDiographJson = async () => {
   return diograph;
 };
 
-const DiosphereContext = createContext<any>(diograph);
+const DiosphereContext = createContext<Diograph | null>(null);
 
 export function DiosphereProvider({ children }: { children?: ReactNode }) {
   const [diograph, setDiograph] = useState<Diograph | null>(null);
