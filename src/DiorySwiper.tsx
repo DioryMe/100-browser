@@ -33,7 +33,10 @@ const DiorySwiper = ({ createSlide }: Props) => {
       setStoryDiory(story);
 
       if (swiper) {
-        swiper.slideTo(prev ? 1 : 0, 0, false);
+        // Couldn't get transition from Riverfest photo to event without this
+        setTimeout(() => {
+          swiper.slideTo(prev ? 1 : 0, 0, false);
+        }, 1);
       }
     }
   }, [focusId, swiper, diograph]);
