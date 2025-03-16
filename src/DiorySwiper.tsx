@@ -32,9 +32,7 @@ const DiorySwiper = ({ createSlide }: Props) => {
       setStoryDiory(story);
 
       if (swiper) {
-        setTimeout(() => {
-          swiper.slideTo(prev ? 1 : 0, 0, false);
-        }, 1);
+        swiper.slideTo(prev ? 1 : 0, 0, false);
       }
     }
   }, [focusId, swiper, diograph]);
@@ -61,9 +59,7 @@ const DiorySwiper = ({ createSlide }: Props) => {
 
             if (prevId && !slides.includes(prevId)) {
               setSlides((slides) => [prevId, ...slides]);
-              setTimeout(() => {
-                swiper.slideTo(swiper.activeIndex + 1, 0, false);
-              }, 1);
+              swiper.slideTo(swiper.activeIndex + 1, 0, false);
             }
           }}
           onSlideNextTransitionStart={(swiper) => {
