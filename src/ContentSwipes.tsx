@@ -22,6 +22,7 @@ const ContentSwipes = () => {
 
 export default ContentSwipes;
 
+// TODO: Video content
 // {
 //   type === "video" && (
 //     <>

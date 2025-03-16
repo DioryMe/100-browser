@@ -7,7 +7,7 @@ import { Diograph } from "@diograph/diograph";
 import { useParams } from "react-router-dom";
 import { getDioryInfo } from "./utils/dioryInfo";
 import { ReactNode, useEffect, useState } from "react";
-import { IDioryObject } from "@diograph/diograph/types";
+import { IDiory, IDioryObject } from "@diograph/diograph/types";
 const diograph = new Diograph(diographJson);
 
 interface Props {
@@ -18,9 +18,9 @@ const DiorySwiper = ({ createSlide }: Props) => {
   const { focusId } = useParams();
 
   const [slides, setSlides] = useState<string[]>([]);
-  const [prevDioryId, setPrevDioryId] = useState<any>(null);
-  const [nextDioryId, setNextDioryId] = useState<any>(null);
-  const [storyDiory, setStoryDiory] = useState<any>(null);
+  const [prevDioryId, setPrevDioryId] = useState<string>(null);
+  const [nextDioryId, setNextDioryId] = useState<string>(null);
+  const [storyDiory, setStoryDiory] = useState<IDiory>(null);
 
   const [swiper, setSwiper] = useState(null);
 
