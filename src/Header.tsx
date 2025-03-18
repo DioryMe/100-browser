@@ -13,6 +13,7 @@ const Header = ({ text, onClick }: Props) => {
         className={styles.headerSquare}
         // For some reason headerSquare class is not applied properly so needed to add these inline
         style={{ width: "80px", height: "100%" }}
+        onClick={onClick}
       >
         <img src="https://www.svgrepo.com/download/305142/arrow-ios-back.svg" />
       </div>
