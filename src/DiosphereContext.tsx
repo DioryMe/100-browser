@@ -16,7 +16,10 @@ const loadDiographJson = async () => {
     "http://diory-demo-content.surge.sh";
   const roomAuthToken = sessionStorage.getItem("roomAuthToken");
 
-  const httpClient = new HttpClient(roomAddress, roomAuthToken);
+  const httpClient = new HttpClient(
+    roomAddress,
+    roomAuthToken ? `Bearer ${roomAuthToken}` : undefined
+  );
   const diographContents = await httpClient.readTextItem("diograph.json");
 
   const diograph = JSON.parse(diographContents);
