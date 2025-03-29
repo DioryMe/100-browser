@@ -11,7 +11,12 @@ import { validateDiograph } from "@diograph/diograph/validator";
 import { IDiory } from "@diograph/diograph/types";
 
 const loadDiographJson = async () => {
-  const httpClient = new HttpClient("http://diory-demo-content.surge.sh");
+  const roomAddress =
+    sessionStorage.getItem("roomAddress") ||
+    "http://diory-demo-content.surge.sh";
+  const roomAuthToken = sessionStorage.getItem("roomAuthToken");
+
+  const httpClient = new HttpClient(roomAddress, roomAuthToken);
   const diographContents = await httpClient.readTextItem("diograph.json");
 
   const diograph = JSON.parse(diographContents);
