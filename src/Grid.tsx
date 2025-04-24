@@ -1,15 +1,26 @@
-// ... existing imports ...
+import { useState } from "react";
 import diograph from "../mary-json.json";
 import FilterSelector from "./FilterSelector";
 
 const Grid = () => {
-  // 1) Map the JSON object into an array with flags
-  const dioryArray = Object.values(diograph).map((diory, idx) => ({
-    dioryId: diory.id,
-    image: diory.image,
-    selected: (idx + 1) % 4 === 0,
-    existing: (idx + 1) % 6 === 0,
-  }));
+  // 1) Map the JSON object into an array with flags in state
+  const [dioryArray, setDioryArray] = useState(() =>
+    Object.values(diograph).map((diory, idx) => ({
+      dioryId: diory.id,
+      image: diory.image,
+      selected: (idx + 1) % 4 === 0,
+      existing: (idx + 1) % 6 === 0,
+    }))
+  );
+
+  // Toggle selected flag when clicking an item
+  const toggleSelected = (id: string) => {
+    setDioryArray((prev) =>
+      prev.map((item) =>
+        item.dioryId === id ? { ...item, selected: !item.selected } : item
+      )
+    );
+  };
   // 2) Inline styles for grid and items
   const gridStyle = {
     display: "grid",
@@ -19,6 +30,7 @@ const Grid = () => {
   };
   const getItemStyle = (selected, existing) => ({
     position: "relative",
+    cursor: "pointer",
     border: selected
       ? "3px solid blue"
       : existing
@@ -37,13 +49,25 @@ const Grid = () => {
     fontSize: "12px",
     borderRadius: "2px",
   };
+
+  const alertSelectedIds = () => {
+    const selectedIds = dioryArray
+      .filter((item) => item.selected)
+      .map((item) => item.dioryId);
+    alert(selectedIds.join(", "));
+  };
+
   // 3) Render the grid
   return (
     <>
       <FilterSelector />
       <div style={gridStyle}>
         {dioryArray.map(({ dioryId, image, selected, existing }) => (
-          <div key={dioryId} style={getItemStyle(selected, existing)}>
+          <div
+            key={dioryId}
+            style={getItemStyle(selected, existing)}
+            onClick={() => toggleSelected(dioryId)}
+          >
             <img
               src={image}
               alt={dioryId}
@@ -69,6 +93,7 @@ const Grid = () => {
           </div>
         ))}
       </div>
+      <button onClick={alertSelectedIds}>Show Selected IDs</button>
     </>
   );
 };
