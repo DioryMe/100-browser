@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import styles from "./Header.module.css";
 import { MouseEventHandler } from "react";
 
@@ -7,6 +8,7 @@ interface Props {
 }
 
 const Header = ({ text, onClick }: Props) => {
+  const navigate = useNavigate();
   return (
     <div className={styles.headerContainer}>
       <div
@@ -23,7 +25,8 @@ const Header = ({ text, onClick }: Props) => {
       <div
         className={styles.headerSquare}
         // For some reason headerSquare class is not applied properly so needed to add these inline
-        style={{ width: "80px", height: "100%" }}
+        style={{ width: "80px", height: "100%", cursor: "pointer" }}
+        onClick={() => navigate("/grid")}
       >
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Hamburger_icon.svg/640px-Hamburger_icon.svg.png" />
       </div>

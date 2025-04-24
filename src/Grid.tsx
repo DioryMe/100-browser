@@ -1,16 +1,24 @@
 import { useState } from "react";
-import diograph from "../mary-json.json";
+import diograph from "../diograph.json";
 import FilterSelector from "./FilterSelector";
+import { useNavigate } from "react-router-dom";
 
 const Grid = () => {
+  const navigate = useNavigate();
   // 1) Map the JSON object into an array with flags in state
   const [dioryArray, setDioryArray] = useState(() =>
-    Object.values(diograph).map((diory, idx) => ({
-      dioryId: diory.id,
-      image: diory.image,
-      selected: (idx + 1) % 4 === 0,
-      existing: (idx + 1) % 6 === 0,
-    }))
+    Object.values(diograph)
+      .sort((dioryA, dioryB) => {
+        const dioryADate = new Date(dioryA.date);
+        const dioryBDate = new Date(dioryB.date);
+        return dioryADate > dioryBDate ? 1 : -1;
+      })
+      .map((diory, idx) => ({
+        dioryId: diory.id,
+        image: diory.image,
+        selected: (idx + 1) % 4 === 0,
+        existing: (idx + 1) % 6 === 0,
+      }))
   );
 
   // Toggle selected flag when clicking an item
@@ -63,37 +71,44 @@ const Grid = () => {
       <FilterSelector />
       <div style={gridStyle}>
         {dioryArray.map(({ dioryId, image, selected, existing }) => (
-          <div
-            key={dioryId}
-            style={getItemStyle(selected, existing)}
-            onClick={() => toggleSelected(dioryId)}
-          >
-            <img
-              src={image}
-              alt={dioryId}
-              style={{ width: "100%", height: "auto" }}
-            />
-            {selected && (
-              <div style={{ ...badgeStyle, backgroundColor: "blue" }}>
-                Selected
-              </div>
-            )}
-            {existing && (
-              <div
-                style={{
-                  ...badgeStyle,
-                  top: "auto",
-                  bottom: "5px",
-                  backgroundColor: "green",
-                }}
-              >
-                Existing
-              </div>
-            )}
-          </div>
+          <a href={`/diory/${dioryId}/content`}>
+            <div
+              key={dioryId}
+              style={getItemStyle(selected, existing)}
+              // onClick={() => toggleSelected(dioryId)}
+            >
+              <img
+                src={image}
+                alt={dioryId}
+                style={{ width: "100%", height: "auto" }}
+              />
+              {selected && (
+                <div style={{ ...badgeStyle, backgroundColor: "blue" }}>
+                  Selected
+                </div>
+              )}
+              {existing && (
+                <div
+                  style={{
+                    ...badgeStyle,
+                    top: "auto",
+                    bottom: "5px",
+                    backgroundColor: "green",
+                  }}
+                >
+                  Existing
+                </div>
+              )}
+            </div>
+          </a>
         ))}
       </div>
-      <button onClick={alertSelectedIds}>Show Selected IDs</button>
+      <div>
+        <button onClick={alertSelectedIds}>Show Selected IDs</button>
+      </div>
+      <div>
+        <button onClick={() => navigate("/home")}>Back</button>
+      </div>
     </>
   );
 };
