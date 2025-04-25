@@ -20,8 +20,8 @@ const Grid = () => {
       .map((diory, idx) => ({
         dioryId: diory.id,
         image: diory.image,
-        selected: (idx + 1) % 4 === 0,
-        existing: (idx + 1) % 6 === 0,
+        // selected: (idx + 1) % 4 === 0,
+        // existing: (idx + 1) % 6 === 0,
       }));
 
     setDioryArray(dioryArray);
@@ -76,7 +76,7 @@ const Grid = () => {
     <>
       <FilterSelector />
       <div>
-        <button onClick={alertSelectedIds}>Show Selected IDs</button>
+        <button onClick={alertSelectedIds}>Process selected</button>
       </div>
       <div>
         <button onClick={() => navigate("/room-selector")}>
