@@ -9,9 +9,13 @@ import { Diograph } from "@diograph/diograph";
 import { HttpClient } from "@diograph/http-client";
 import { validateDiograph } from "@diograph/diograph/validator";
 import { IDiory } from "@diograph/diograph/types";
+import { ACTIVE_KEY } from "./RoomSelector";
 
 const loadDiographJson = async () => {
-  const httpClient = new HttpClient("http://localhost:5173");
+  const stored = localStorage.getItem(ACTIVE_KEY);
+  const { address } = JSON.parse(stored);
+
+  const httpClient = new HttpClient(address);
   const diographContents = await httpClient.readTextItem("diograph.json");
   // const httpClient = new HttpClient("http://diory-demo-content.surge.sh");
   // const diographContents = await httpClient.readTextItem("diograph.json");
