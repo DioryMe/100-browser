@@ -1,13 +1,17 @@
-import { useState } from "react";
-import diograph from "../diograph.json";
+import { useEffect, useState } from "react";
 import FilterSelector from "./FilterSelector";
 import { useNavigate } from "react-router-dom";
+import { useDiosphereContext } from "./DiosphereContext";
 
 const Grid = () => {
   const navigate = useNavigate();
-  // 1) Map the JSON object into an array with flags in state
-  const [dioryArray, setDioryArray] = useState(() =>
-    Object.values(diograph)
+  const { diograph } = useDiosphereContext();
+  const [dioryArray, setDioryArray] = useState([]);
+
+  useEffect(() => {
+    if (!diograph) return;
+
+    const dioryArray = Object.values(diograph.toObject())
       .sort((dioryA, dioryB) => {
         const dioryADate = new Date(dioryA.date);
         const dioryBDate = new Date(dioryB.date);
@@ -18,8 +22,10 @@ const Grid = () => {
         image: diory.image,
         selected: (idx + 1) % 4 === 0,
         existing: (idx + 1) % 6 === 0,
-      }))
-  );
+      }));
+
+    setDioryArray(dioryArray);
+  }, [diograph]);
 
   // Toggle selected flag when clicking an item
   const toggleSelected = (id: string) => {
@@ -69,6 +75,14 @@ const Grid = () => {
   return (
     <>
       <FilterSelector />
+      <div>
+        <button onClick={alertSelectedIds}>Show Selected IDs</button>
+      </div>
+      <div>
+        <button onClick={() => navigate("/room-selector")}>
+          Archive selector
+        </button>
+      </div>
       <div style={gridStyle}>
         {dioryArray.map(({ dioryId, image, selected, existing }) => (
           <a key={dioryId} href={`/diory/${dioryId}/content`}>
@@ -102,12 +116,6 @@ const Grid = () => {
             </div>
           </a>
         ))}
-      </div>
-      <div>
-        <button onClick={alertSelectedIds}>Show Selected IDs</button>
-      </div>
-      <div>
-        <button onClick={() => navigate("/home")}>Back</button>
       </div>
     </>
   );
