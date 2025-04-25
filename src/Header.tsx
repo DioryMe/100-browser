@@ -22,13 +22,32 @@ const Header = ({ text, onClick }: Props) => {
       <div className={styles.headerText} onClick={onClick}>
         {text}
       </div>
-      <div
-        className={styles.headerSquare}
-        // For some reason headerSquare class is not applied properly so needed to add these inline
-        style={{ width: "80px", height: "100%", cursor: "pointer" }}
-        onClick={() => navigate("/grid")}
-      >
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Hamburger_icon.svg/640px-Hamburger_icon.svg.png" />
+      <div>
+        <div
+          className={styles.headerSquare}
+          // For some reason headerSquare class is not applied properly so needed to add these inline
+          style={{
+            width: "100px",
+            height: "20px",
+            cursor: "pointer",
+          }}
+          onClick={() => navigate("/room-selector")}
+        >
+          Rooms
+        </div>
+        <div
+          className={styles.headerSquare}
+          // For some reason headerSquare class is not applied properly so needed to add these inline
+          style={{
+            width: "100px",
+            height: "20px",
+            cursor: "pointer",
+            display: "inline-block",
+          }}
+          onClick={() => navigate("/grid")}
+        >
+          Archive
+        </div>
       </div>
     </div>
   );

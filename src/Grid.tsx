@@ -71,7 +71,7 @@ const Grid = () => {
       <FilterSelector />
       <div style={gridStyle}>
         {dioryArray.map(({ dioryId, image, selected, existing }) => (
-          <a href={`/diory/${dioryId}/content`}>
+          <a key={dioryId} href={`/diory/${dioryId}/content`}>
             <div
               key={dioryId}
               style={getItemStyle(selected, existing)}
