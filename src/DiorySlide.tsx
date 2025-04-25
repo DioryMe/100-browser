@@ -43,7 +43,18 @@ export const DiorySlide = ({ diory }: { diory: IDioryObject }) => {
           </div>
           <div className={styles.infoColumn}>
             <div className={styles.fieldLabel}>Latlng:</div>
-            <div>{diory.latlng || "-" || "64.42848, 41.58833"}</div>
+            <div>
+              <a
+                target="_blank"
+                href={
+                  diory.latlng
+                    ? `https://google.com/search?q=${diory.latlng}`
+                    : ""
+                }
+              >
+                {diory.latlng || "-" || "64.42848, 41.58833"}
+              </a>
+            </div>
           </div>
         </div>
       </div>
