@@ -49,16 +49,24 @@ const FilterSelector: React.FC = () => {
 
   return (
     <div>
-      <select onChange={onSelect} defaultValue="">
-        <option value="" disabled>
-          -- choose filter --
-        </option>
-        {available.map((f) => (
-          <option key={f.name} value={f.name}>
-            {f.name}
+      <div>
+        <select onChange={onSelect} defaultValue="">
+          <option value="" disabled>
+            -- choose filter --
           </option>
-        ))}
-      </select>
+          {available.map((f) => (
+            <option key={f.name} value={f.name}>
+              {f.name}
+            </option>
+          ))}
+        </select>
+
+        <div style={{ display: "inline-block" }}>
+          <a href="/filters">
+            <button>Edit filters</button>
+          </a>
+        </div>
+      </div>
 
       <div style={{ marginTop: 12, height: "50px" }}>
         {selected.map((f) => (
