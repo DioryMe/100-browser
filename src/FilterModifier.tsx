@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-interface Filter {
+export interface Filter {
   id: string;
   dateStart: string;
   dateEnd: string;
@@ -18,8 +18,8 @@ interface FilterForm {
   removedIdsText: string; // comma-separated in the form
 }
 
-export const STORAGE_KEY = "filterItems";
-const ACTIVE_KEY = "filterActive";
+export const FILTER_STORAGE_KEY = "filterItems";
+export const FILTER_ACTIVE_KEY = "filterActive";
 
 export const FilterModifier: React.FC = () => {
   const [filters, setFilters] = useState<Filter[]>([]);
@@ -36,7 +36,7 @@ export const FilterModifier: React.FC = () => {
 
   // Load existing filters once on mount
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = localStorage.getItem(FILTER_STORAGE_KEY);
     if (stored) {
       try {
         setFilters(JSON.parse(stored));
@@ -48,7 +48,7 @@ export const FilterModifier: React.FC = () => {
 
   // Load active filter once on mount
   useEffect(() => {
-    const storedActive = localStorage.getItem(ACTIVE_KEY);
+    const storedActive = localStorage.getItem(FILTER_ACTIVE_KEY);
     if (storedActive) {
       try {
         setActiveFilter(JSON.parse(storedActive));
@@ -64,7 +64,7 @@ export const FilterModifier: React.FC = () => {
       isFirstSave.current = false;
       return;
     }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(filters));
+    localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(filters));
   }, [filters]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,14 +105,14 @@ export const FilterModifier: React.FC = () => {
 
     // if the removed one was active, clear it
     if (activeFilter?.id === id) {
-      localStorage.removeItem(ACTIVE_KEY);
+      localStorage.removeItem(FILTER_ACTIVE_KEY);
       setActiveFilter(null);
     }
   };
 
   // Mark a filter as active
   const handleSetActive = (filter: Filter) => {
-    localStorage.setItem(ACTIVE_KEY, JSON.stringify(filter));
+    localStorage.setItem(FILTER_ACTIVE_KEY, JSON.stringify(filter));
     setActiveFilter(filter);
   };
 

@@ -1,17 +1,49 @@
 import { useEffect, useState } from "react";
-import FilterSelector from "./FilterSelector";
+import FilterSelector, { pillStyle } from "./FilterSelector";
 import { useNavigate } from "react-router-dom";
 import { useDiosphereContext } from "./DiosphereContext";
+import {
+  Filter,
+  FILTER_ACTIVE_KEY,
+  FILTER_STORAGE_KEY,
+} from "./FilterModifier";
 
 const Grid = () => {
   const navigate = useNavigate();
   const { diograph } = useDiosphereContext();
   const [dioryArray, setDioryArray] = useState([]);
+  const [activeFilter, setActiveFilter] = useState<Filter | null>(null);
+
+  const stored = localStorage.getItem(FILTER_STORAGE_KEY);
+  const initialFilters = JSON.parse(stored);
+  const [filters, setFilters] = useState<Filter[]>(initialFilters);
+
+  useEffect(() => {
+    const storedActive = localStorage.getItem(FILTER_ACTIVE_KEY);
+    if (storedActive) {
+      try {
+        setActiveFilter(JSON.parse(storedActive));
+      } catch {
+        console.error("Invalid active filter JSON in localStorage");
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (!diograph) return;
 
-    const dioryArray = Object.values(diograph.toObject())
+    const diographObject = activeFilter
+      ? diograph.queryDiographByDateAndGeo({
+          latlngStart: activeFilter.latlngStart,
+          latlngEnd: activeFilter.latlngEnd,
+          dateStart: activeFilter.dateStart,
+          dateEnd: activeFilter.dateEnd,
+          // latlngStart: "61.48587998183945, 23.96633387857436",
+          // latlngEnd: "61.385879805830584, 24.241258867230393",
+        })
+      : diograph.toObject();
+
+    const dioryArray = Object.values(diographObject)
       .sort((dioryA, dioryB) => {
         const dioryADate = new Date(dioryA.date);
         const dioryBDate = new Date(dioryB.date);
@@ -25,7 +57,21 @@ const Grid = () => {
       }));
 
     setDioryArray(dioryArray);
-  }, [diograph]);
+  }, [diograph, activeFilter]);
+
+  const handleSetActive = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const filterName = e.target.value;
+    const filter = filters.find((f) => f.id === filterName);
+    localStorage.setItem(FILTER_ACTIVE_KEY, JSON.stringify(filter));
+    setActiveFilter(filter);
+  };
+
+  const handleRemove = (id: string) => {
+    if (activeFilter?.id === id) {
+      localStorage.removeItem(FILTER_ACTIVE_KEY);
+      setActiveFilter(null);
+    }
+  };
 
   // Toggle selected flag when clicking an item
   const toggleSelected = (id: string) => {
@@ -74,7 +120,37 @@ const Grid = () => {
   // 3) Render the grid
   return (
     <>
-      <FilterSelector />
+      {/* <FilterSelector /> */}
+      <div>
+        <select onChange={handleSetActive} defaultValue="">
+          <option value="" disabled>
+            -- choose filter --
+          </option>
+          {filters.map((f) => (
+            <option key={f.id} value={f.id}>
+              {f.id}
+            </option>
+          ))}
+        </select>
+
+        <div style={{ display: "inline-block" }}>
+          <a href="/filters">
+            <button>Edit filters</button>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        {activeFilter && (
+          <span
+            key={activeFilter.id}
+            style={pillStyle}
+            onClick={() => handleRemove(activeFilter.id)}
+          >
+            {activeFilter.id} &times;
+          </span>
+        )}
+      </div>
       <div>
         <button onClick={alertSelectedIds}>Process selected</button>
       </div>
