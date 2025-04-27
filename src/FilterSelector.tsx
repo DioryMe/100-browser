@@ -1,18 +1,12 @@
 // src/components/FilterSelector.tsx
 import React, { useState } from "react";
+import { STORAGE_KEY } from "./FilterModifier";
 
 type FilterItem = {
   name: string;
   enabled: boolean;
   filter: object;
 };
-
-const initialFilters: FilterItem[] = [
-  { name: "Summer", enabled: false, filter: {} },
-  { name: "Winter", enabled: false, filter: {} },
-  { name: "2022", enabled: false, filter: {} },
-  { name: "Map", enabled: false, filter: {} },
-];
 
 const pillStyle: React.CSSProperties = {
   display: "inline-block",
@@ -25,6 +19,10 @@ const pillStyle: React.CSSProperties = {
 };
 
 const FilterSelector: React.FC = () => {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  const initialFilters = JSON.parse(stored).map((item) => {
+    return { name: item.id, enabled: false, filter: { ...item } };
+  });
   const [filters, setFilters] = useState<FilterItem[]>(initialFilters);
 
   // Split out enabled vs. available

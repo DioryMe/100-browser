@@ -1,152 +1,233 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 
-type ClientType = "HttpClient" | "S3Client";
-
-interface Item {
+interface Filter {
   id: string;
-  clientType: ClientType;
-  address: string;
+  dateStart: string;
+  dateEnd: string;
+  latlngStart: string;
+  latlngEnd: string;
+  removedIds: string[];
 }
 
-const STORAGE_KEY = "roomSelectorItems";
-export const ACTIVE_KEY = "roomSelectorActive";
+interface FilterForm {
+  id: string;
+  dateStart: string;
+  dateEnd: string;
+  latlngStart: string;
+  latlngEnd: string;
+  removedIdsText: string; // comma-separated in the form
+}
 
-export const FilterModifier = () => {
-  const navigate = useNavigate();
-  // All stored items
-  const [items, setItems] = useState<Item[]>([]);
-  // Form state for new item
-  const [formData, setFormData] = useState<Item>({
+export const STORAGE_KEY = "filterItems";
+const ACTIVE_KEY = "filterActive";
+
+export const FilterModifier: React.FC = () => {
+  const [filters, setFilters] = useState<Filter[]>([]);
+  const [activeFilter, setActiveFilter] = useState<Filter | null>(null);
+  const [form, setForm] = useState<FilterForm>({
     id: "",
-    clientType: "HttpClient",
-    address: "",
+    dateStart: "",
+    dateEnd: "",
+    latlngStart: "",
+    latlngEnd: "",
+    removedIdsText: "",
   });
+  const isFirstSave = useRef(true);
 
-  // Active item state + load on mount
-  const [activeItem, setActiveItem] = useState<Item | null>(null);
-  useEffect(() => {
-    const stored = localStorage.getItem(ACTIVE_KEY);
-    if (stored) {
-      try {
-        setActiveItem(JSON.parse(stored) as Item);
-      } catch (e) {
-        console.error("Invalid active data", e);
-      }
-    }
-  }, []);
-
-  // Load from localStorage on mount
+  // Load existing filters once on mount
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
-        setItems(JSON.parse(stored) as Item[]);
-      } catch (e) {
-        console.error("Invalid session data", e);
+        setFilters(JSON.parse(stored));
+      } catch {
+        console.error("Invalid filter JSON in localStorage");
       }
     }
   }, []);
 
-  // Persist to localStorage whenever items change, but skip the very first run
-  const isFirstSave = useRef(true);
+  // Load active filter once on mount
+  useEffect(() => {
+    const storedActive = localStorage.getItem(ACTIVE_KEY);
+    if (storedActive) {
+      try {
+        setActiveFilter(JSON.parse(storedActive));
+      } catch {
+        console.error("Invalid active filter JSON in localStorage");
+      }
+    }
+  }, []);
+
+  // Persist filters to localStorage on every change (skip initial mount)
   useEffect(() => {
     if (isFirstSave.current) {
       isFirstSave.current = false;
       return;
     }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  }, [items]);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(filters));
+  }, [filters]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setForm((f) => ({ ...f, [name]: value }));
   };
 
   const handleAdd = () => {
-    if (!formData.id.trim() || !formData.address.trim()) return;
-    setItems((prev) => [...prev, formData]);
-    setFormData({ id: "", clientType: "HttpClient", address: "" });
+    const trimmedId = form.id.trim();
+    if (!trimmedId) return;
+
+    const newFilter: Filter = {
+      id: trimmedId,
+      dateStart: form.dateStart,
+      dateEnd: form.dateEnd,
+      latlngStart: form.latlngStart,
+      latlngEnd: form.latlngEnd,
+      removedIds: form.removedIdsText
+        .split(",")
+        .map((s) => s.trim())
+        .filter((s) => s),
+    };
+
+    setFilters((prev) => [...prev, newFilter]);
+    // reset form
+    setForm({
+      id: "",
+      dateStart: "",
+      dateEnd: "",
+      latlngStart: "",
+      latlngEnd: "",
+      removedIdsText: "",
+    });
   };
 
   const handleRemove = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-    // clear active if removing the active item
-    if (activeItem?.id === id) {
+    setFilters((prev) => prev.filter((f) => f.id !== id));
+
+    // if the removed one was active, clear it
+    if (activeFilter?.id === id) {
       localStorage.removeItem(ACTIVE_KEY);
-      setActiveItem(null);
+      setActiveFilter(null);
     }
   };
 
-  const handleSetActive = (item: Item) => {
-    localStorage.setItem(ACTIVE_KEY, JSON.stringify(item));
-    setActiveItem(item);
+  // Mark a filter as active
+  const handleSetActive = (filter: Filter) => {
+    localStorage.setItem(ACTIVE_KEY, JSON.stringify(filter));
+    setActiveFilter(filter);
   };
 
   return (
-    <>
-      <div>
-        {/* List of existing items */}
-        {items.map((item) => (
+    <div style={{ padding: 16 }}>
+      {/* FILTER CARDS */}
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 16,
+        }}
+      >
+        {filters.map((f) => (
+          // wrap each card with an active‐toggle button
           <div
-            key={item.id}
-            style={{ marginBottom: 8, display: "flex", alignItems: "center" }}
+            key={f.id}
+            style={{ display: "flex", alignItems: "center", gap: 8 }}
           >
-            <button
-              type="button"
-              onClick={() => handleSetActive(item)}
+            {/* existing card layout */}
+            <div
+              key={f.id}
               style={{
-                marginRight: 8,
-                color: activeItem?.id === item.id ? "green" : "gray",
+                border: "1px solid #ccc",
+                borderRadius: 4,
+                padding: 12,
+                width: 220,
+                display: "flex",
+                flexDirection: "column",
+                gap: 6,
               }}
             >
-              {activeItem?.id === item.id ? "✓" : "○"}
-            </button>
-            <input value={item.id} disabled />
-            <select value={item.clientType} disabled>
-              <option value="HttpClient">HttpClient</option>
-              <option value="S3Client">S3Client</option>
-            </select>
-            <input value={item.address} disabled />
-            <button type="button" onClick={() => handleRemove(item.id)}>
-              X
-            </button>
+              <input value={f.id} disabled />
+              <input value={f.dateStart} disabled />
+              <input value={f.dateEnd} disabled />
+              <input value={f.latlngStart} disabled />
+              <input value={f.latlngEnd} disabled />
+              <input
+                value={f.removedIds.join(",")}
+                disabled
+                placeholder="removedIds"
+              />
+              <button
+                type="button"
+                onClick={() => handleRemove(f.id)}
+                style={{ marginTop: 8 }}
+              >
+                X
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSetActive(f)}
+                style={{ color: activeFilter?.id === f.id ? "green" : "gray" }}
+              >
+                {activeFilter?.id === f.id ? "✓" : "○"}
+              </button>
+            </div>
           </div>
         ))}
-        {/* Add-new form */}
-        <div style={{ marginBottom: 12 }}>
-          <input
-            name="id"
-            placeholder="Name"
-            value={formData.id}
-            onChange={handleChange}
-          />
-          <select
-            name="clientType"
-            value={formData.clientType}
-            onChange={handleChange}
-          >
-            <option value="HttpClient">HttpClient</option>
-            <option value="S3Client">S3Client</option>
-          </select>
-          <input
-            name="address"
-            placeholder="Address"
-            value={formData.address}
-            onChange={handleChange}
-          />
-          <button type="button" onClick={handleAdd}>
-            +
-          </button>
-        </div>
       </div>
-      <div>
-        <a href={"/grid"}>
-          <button>Go to Archive</button>
-        </a>
+      {/* STACKED FORM */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+          maxWidth: 300,
+          marginBottom: 24,
+        }}
+      >
+        <input
+          name="id"
+          placeholder="ID"
+          value={form.id}
+          onChange={handleChange}
+        />
+        <input
+          name="dateStart"
+          type="date"
+          placeholder="Start Date"
+          value={form.dateStart}
+          onChange={handleChange}
+        />
+        <input
+          name="dateEnd"
+          type="date"
+          placeholder="End Date"
+          value={form.dateEnd}
+          onChange={handleChange}
+        />
+        <input
+          name="latlngStart"
+          placeholder="LatLng Start"
+          value={form.latlngStart}
+          onChange={handleChange}
+        />
+        <input
+          name="latlngEnd"
+          placeholder="LatLng End"
+          value={form.latlngEnd}
+          onChange={handleChange}
+        />
+        <input
+          name="removedIdsText"
+          placeholder="Removed IDs (comma-separated)"
+          value={form.removedIdsText}
+          onChange={handleChange}
+        />
+        <button type="button" onClick={handleAdd}>
+          +
+        </button>
       </div>
-    </>
+      <a href="/grid">
+        <button>Archive</button>
+      </a>
+    </div>
   );
 };
