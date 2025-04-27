@@ -1,6 +1,6 @@
 // src/components/FilterSelector.tsx
 import React, { useState } from "react";
-import { STORAGE_KEY } from "./FilterModifier";
+import { FILTER_STORAGE_KEY } from "./FilterModifier";
 
 type FilterItem = {
   name: string;
@@ -8,7 +8,7 @@ type FilterItem = {
   filter: object;
 };
 
-const pillStyle: React.CSSProperties = {
+export const pillStyle: React.CSSProperties = {
   display: "inline-block",
   padding: "4px 10px",
   margin: "4px",
@@ -19,7 +19,7 @@ const pillStyle: React.CSSProperties = {
 };
 
 const FilterSelector: React.FC = () => {
-  const stored = localStorage.getItem(STORAGE_KEY);
+  const stored = localStorage.getItem(FILTER_STORAGE_KEY);
   const initialFilters = JSON.parse(stored).map((item) => {
     return { name: item.id, enabled: false, filter: { ...item } };
   });
