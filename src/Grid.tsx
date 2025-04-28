@@ -7,8 +7,13 @@ import {
   FILTER_ACTIVE_KEY,
   FILTER_STORAGE_KEY,
 } from "./FilterModifier";
+import { HttpClient } from "@diograph/http-client";
+import { validateDiograph } from "@diograph/diograph/validator";
+import { STORAGE_KEY } from "./RoomSelector";
+import { IDiograph } from "@diograph/diograph/types";
 
 const Grid = () => {
+  const globalSearch = true;
   const navigate = useNavigate();
   const { diograph } = useDiosphereContext();
   const [dioryArray, setDioryArray] = useState([]);
@@ -29,10 +34,8 @@ const Grid = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (!diograph) return;
-
-    const diographObject = activeFilter
+  const filterAndSortDiograph = (diograph: IDiograph) => {
+    const filteredDiograph = activeFilter
       ? diograph.queryDiographByDateAndGeo({
           latlngStart: activeFilter.latlngStart,
           latlngEnd: activeFilter.latlngEnd,
@@ -43,7 +46,7 @@ const Grid = () => {
         })
       : diograph.toObject();
 
-    const dioryArray = Object.values(diographObject)
+    const dioryArray = Object.values(filteredDiograph)
       .sort((dioryA, dioryB) => {
         const dioryADate = new Date(dioryA.date);
         const dioryBDate = new Date(dioryB.date);
@@ -56,7 +59,40 @@ const Grid = () => {
         // existing: (idx + 1) % 6 === 0,
       }));
 
-    setDioryArray(dioryArray);
+    return dioryArray;
+  };
+
+  useEffect(() => {
+    if (!diograph) return;
+
+    if (globalSearch) {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      const archiveRooms = JSON.parse(stored);
+      Promise.all(
+        archiveRooms.map(async ({ address }) => {
+          const httpClient = new HttpClient(address);
+          console.log(address);
+          const diographContents = await httpClient.readTextItem(
+            "diograph.json"
+          );
+          const diograph = JSON.parse(diographContents);
+          validateDiograph(diograph);
+
+          return diograph;
+        })
+      ).then((otherDiographs) => {
+        const globalDiograph = otherDiographs.reduce((acc, other) => {
+          acc.initialise(other);
+          return acc;
+        }, diograph);
+
+        const globalDioryArray = filterAndSortDiograph(globalDiograph);
+        setDioryArray(globalDioryArray);
+      });
+    } else {
+      const dioryArray = filterAndSortDiograph(diograph);
+      setDioryArray(dioryArray);
+    }
   }, [diograph, activeFilter]);
 
   const handleSetActive = (e: React.ChangeEvent<HTMLSelectElement>) => {
