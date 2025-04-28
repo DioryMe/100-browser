@@ -9,7 +9,7 @@ interface Item {
   address: string;
 }
 
-const STORAGE_KEY = "roomSelectorItems";
+export const STORAGE_KEY = "roomSelectorItems";
 export const ACTIVE_KEY = "roomSelectorActive";
 
 export const RoomSelector = () => {
