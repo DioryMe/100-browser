@@ -7,20 +7,14 @@ import { DiosphereProvider } from "./DiosphereContext";
 import Grid from "./Grid";
 
 const App = () => {
-  // NOTE: The whole app re-renders when context changes
   return (
-    <DiosphereProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate replace to="/home" />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/grid" element={<Grid />} />
-          <Route path="/diory/:focusId" element={<DiorySwipes />} />
-          <Route path="/diory/:focusId/content" element={<ContentSwipes />} />
-          <Route path="/*" element={"Not found"} />
-        </Routes>
-      </BrowserRouter>
-    </DiosphereProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/grid" element={<Grid />} />
+        <Route path="/*" element={"Not found"} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 

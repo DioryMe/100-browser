@@ -1,8 +1,11 @@
 import { useState } from "react";
-import diograph from "../mary-json.json";
+import diograph from "../diograph.json";
 import FilterSelector from "./FilterSelector";
+import { useNavigate } from "react-router-dom";
 
 const Grid = () => {
+  const navigate = useNavigate();
+
   // 1) Map the JSON object into an array with flags in state
   const [dioryArray, setDioryArray] = useState(() =>
     Object.values(diograph).map((diory, idx) => ({
@@ -60,7 +63,7 @@ const Grid = () => {
   // 3) Render the grid
   return (
     <>
-      <FilterSelector />
+      <button onClick={() => navigate(`/`)}>Back</button>
       <div style={gridStyle}>
         {dioryArray.map(({ dioryId, image, selected, existing }) => (
           <div
@@ -93,7 +96,7 @@ const Grid = () => {
           </div>
         ))}
       </div>
-      <button onClick={alertSelectedIds}>Show Selected IDs</button>
+      {/* <button onClick={alertSelectedIds}>Show Selected IDs</button> */}
     </>
   );
 };
