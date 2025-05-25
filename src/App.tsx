@@ -1,19 +1,20 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loadDiograph } from "./store/diorySlice";
+import { loadDiograph, setDiograph } from "./store/diorySlice";
 import { RootState, AppDispatch } from "./store/store";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Grid from "./Grid";
 import HomePage from "./homePage";
+import diograph from "../diograph.json";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { diograph } = useSelector((state: RootState) => state.diory);
+  // const { diograph } = useSelector((state: RootState) => state.diory);
 
   // Load the diograph only once when the App mounts
   useEffect(() => {
     if (!diograph) {
-      dispatch(loadDiograph());
+      dispatch(setDiograph(diograph));
     }
   }, [diograph, dispatch]);
 

@@ -40,7 +40,7 @@ const DiorySwiper = ({ createSlide }: Props) => {
       setSlides(newSlides);
       setNextDioryId(next);
       setPrevDioryId(prev);
-      dispatch(setStoryDiory(storyDiory));
+      dispatch(setStoryDiory(storyDiory.id));
 
       if (swiper) {
         // Couldn't get transition from Riverfest photo to event without this
@@ -74,7 +74,7 @@ const DiorySwiper = ({ createSlide }: Props) => {
             } = getDioryInfo(diograph, prevDioryId);
             setPrevDioryId(prevId);
             setNextDioryId(nextId);
-            setStoryDiory(story);
+            dispatch(setStoryDiory(storyDiory.id));
 
             if (prevId && !slides.includes(prevId)) {
               setSlides((slides) => [prevId, ...slides]);
@@ -96,7 +96,7 @@ const DiorySwiper = ({ createSlide }: Props) => {
             } = getDioryInfo(diograph, nextDioryId);
             setPrevDioryId(prevId);
             setNextDioryId(nextId);
-            setStoryDiory(story);
+            dispatch(setStoryDiory(storyDiory.id));
 
             if (nextId && !slides.includes(nextId)) {
               setSlides((slides) => [...slides, nextId]);
