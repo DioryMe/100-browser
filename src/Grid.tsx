@@ -11,16 +11,13 @@ const Grid = () => {
   const stateDiory = useSelector((state: RootState) => state.diory);
   const { focusId: stateFocusId } = stateDiory;
   const { focusId: urlParamFocusId } = useParams();
-  console.log("baa", stateFocusId);
-  console.log("buu", urlParamFocusId);
+
   useEffect(() => {
     if (stateFocusId) {
-      console.log("set url", stateFocusId);
       navigate(`/diory/${stateFocusId}/grid`);
       return;
     }
     if (urlParamFocusId && urlParamFocusId !== stateFocusId) {
-      console.log("set state", urlParamFocusId);
       dispatch(setFocus({ focusId: urlParamFocusId }));
     }
   }, [stateFocusId, urlParamFocusId, dispatch, navigate]);
@@ -44,9 +41,6 @@ const Grid = () => {
           : { ...item, selected: false }
       )
     );
-    console.log("boom", stateDiory);
-    console.log("click state", id);
-
     dispatch(setFocus({ focusId: id }));
   };
   // 2) Inline styles for grid and items
