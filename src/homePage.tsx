@@ -17,6 +17,7 @@ const HomePage = () => {
           {diograph[story.id].text}
           <img
             onClick={() => {
+              // TODO: Set first diory of the story in focus
               dispatch(setFocus({ focusId: story.id, storyId: "/" }));
               navigate(`/diory/${story.id}/grid`);
             }}

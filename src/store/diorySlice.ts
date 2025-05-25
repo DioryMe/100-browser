@@ -3,7 +3,7 @@ import { DioryInfo, getDioryInfo } from "../utils/dioryInfo";
 import { Diograph } from "@diograph/diograph";
 import { HttpClient } from "@diograph/http-client";
 import { validateDiograph } from "@diograph/diograph/validator";
-import { IDiographObject } from "@diograph/diograph/types";
+import { IDiographObject, IDioryObject } from "@diograph/diograph/types";
 import diographJson from "../../diograph.json";
 
 // Thunk action to asynchronously load the diograph
@@ -21,12 +21,22 @@ interface DioryState {
   diograph: IDiographObject | null;
   focusId: string | null;
   storyId: string | null;
+  storyDiories: IDioryObject[];
 }
 
 const initialState: DioryState = {
   diograph: null,
   focusId: null,
   storyId: null,
+  storyDiories: [],
+};
+
+const getStoryDiories = (storyId: string, diograph: IDiographObject) => {
+  const diographInstance = new Diograph(diograph);
+  const storyDiory = diographInstance.getDiory({ id: storyId });
+  return storyDiory.links.map((link) =>
+    diographInstance.getDiory({ id: link.id }).toObject()
+  );
 };
 
 const diorySlice = createSlice({
@@ -40,6 +50,7 @@ const diorySlice = createSlice({
       const { focusId, storyId } = action.payload;
       state.focusId = focusId;
       state.storyId = storyId;
+      state.storyDiories = getStoryDiories(storyId, state.diograph);
     },
     // setStoryDiory allows updating just the story piece of the state.
     setStory(state, action: PayloadAction<any>) {

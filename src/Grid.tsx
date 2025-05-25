@@ -11,10 +11,8 @@ const Grid = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const stateDiory = useSelector((state: RootState) => state.diory);
-  const { focusId, storyId, diograph } = stateDiory;
+  const { focusId, storyId, diograph, storyDiories } = stateDiory;
   const { focusId: urlParamFocusId } = useParams();
-
-  console.log("rerender");
 
   useEffect(() => {
     if (focusId) {
@@ -26,24 +24,6 @@ const Grid = () => {
       dispatch(setFocus({ focusId: urlParamFocusId, storyId }));
     }
   }, [focusId, urlParamFocusId]);
-
-  const [dioryArray, setDioryArray] = useState([]);
-
-  useEffect(() => {
-    if (diograph && storyId) {
-      const diographInstance = new Diograph(diograph);
-      const storyDiory = diographInstance.getDiory({ id: storyId });
-      setDioryArray(
-        storyDiory.links.map((link) => {
-          const linkedDiory = diographInstance.getDiory({ id: link.id });
-          return {
-            dioryId: linkedDiory.id,
-            image: linkedDiory.image,
-          };
-        })
-      );
-    }
-  }, [diograph, storyId]);
 
   const focusSelected = (id: string) => {
     console.log("new", stateDiory);
@@ -57,7 +37,7 @@ const Grid = () => {
     <>
       <button onClick={() => navigate(`/`)}>Back</button>
       <div style={gridStyle}>
-        {dioryArray.map(({ dioryId, image }) => (
+        {storyDiories.map(({ id: dioryId, image }) => (
           <div
             key={dioryId}
             style={focusId === dioryId ? getSelectedItemStyle() : {}}
