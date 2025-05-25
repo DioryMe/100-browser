@@ -10,7 +10,7 @@ const HomePage = () => {
     <div>
       <div>{rootDiory.text}</div>
       {rootDiory.links.map((story) => (
-        <div>
+        <div key={story}>
           {diograph[story.id].text}
           <img
             onClick={() => navigate(`/diory/${story.id}/grid`)}

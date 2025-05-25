@@ -48,6 +48,14 @@ const diorySlice = createSlice({
       state.diograph = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(
+      loadDiograph.fulfilled,
+      (state, action: PayloadAction<IDiographObject>) => {
+        state.diograph = action.payload;
+      }
+    );
+  },
 });
 
 export const { setFocus, setStoryDiory, setDiograph } = diorySlice.actions;
