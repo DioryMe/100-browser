@@ -1,6 +1,5 @@
 import { useState } from "react";
 import diograph from "../diograph.json";
-import FilterSelector from "./FilterSelector";
 import { useNavigate } from "react-router-dom";
 
 const Grid = () => {

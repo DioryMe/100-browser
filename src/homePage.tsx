@@ -13,7 +13,7 @@ const HomePage = () => {
         <div>
           {diograph[story.id].text}
           <img
-            onClick={() => navigate(`/grid`)}
+            onClick={() => navigate(`/diory/${story.id}/grid`)}
             src={diograph[story.id].image}
           />
         </div>

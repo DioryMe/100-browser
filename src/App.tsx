@@ -2,8 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./homePage";
 import "./App.css";
 import ContentSwipes from "./ContentSwipes";
-import DiorySwipes from "./DiorySwipes";
-import { DiosphereProvider } from "./DiosphereContext";
 import Grid from "./Grid";
 
 const App = () => {
@@ -11,7 +9,8 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/grid" element={<Grid />} />
+        <Route path="/diory/:focusId/grid" element={<Grid />} />
+        {/* <Route path="/diory/:focusId/content" element={<ContentSwipes />} /> */}
         <Route path="/*" element={"Not found"} />
       </Routes>
     </BrowserRouter>
