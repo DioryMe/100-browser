@@ -6,15 +6,25 @@ import { useParams } from "react-router-dom";
 import { getDioryInfo } from "./utils/dioryInfo";
 import { ReactNode, useEffect, useState } from "react";
 import { IDioryObject } from "@diograph/diograph/types";
-import { useDiosphereContext } from "./DiosphereContext";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "./store/store";
+import { setFocus, setStoryDiory } from "./store/diorySlice";
 
 interface Props {
   createSlide: (diory: IDioryObject, key: number) => ReactNode;
 }
 
 const DiorySwiper = ({ createSlide }: Props) => {
-  const { focusId } = useParams();
-  const { diograph, setStoryDiory, storyDiory } = useDiosphereContext();
+  const { focusId: focusIdParam } = useParams();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const {
+    diograph,
+    story: storyDiory,
+    focusId,
+    prev,
+    next,
+  } = useSelector((state: RootState) => state.diory);
 
   const [slides, setSlides] = useState<string[]>([]);
   const [prevDioryId, setPrevDioryId] = useState<string>(null);
@@ -25,12 +35,12 @@ const DiorySwiper = ({ createSlide }: Props) => {
   // On route load or when navigating via link from other page
   useEffect(() => {
     if (diograph && focusId) {
-      const { story, next, prev } = getDioryInfo(diograph, focusId);
+      // const { story, next, prev } = getDioryInfo(diograph, focusId);
       const newSlides = [prev, focusId, next];
       setSlides(newSlides);
       setNextDioryId(next);
       setPrevDioryId(prev);
-      setStoryDiory(story);
+      setStoryDiory(storyDiory);
 
       if (swiper) {
         // Couldn't get transition from Riverfest photo to event without this
