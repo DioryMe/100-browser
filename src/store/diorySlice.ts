@@ -3,6 +3,7 @@ import { DioryInfo, getDioryInfo } from "../utils/dioryInfo";
 import { Diograph } from "@diograph/diograph";
 import { HttpClient } from "@diograph/http-client";
 import { validateDiograph } from "@diograph/diograph/validator";
+import { IDiographObject } from "@diograph/diograph/types";
 
 // Thunk action to asynchronously load the diograph
 export const loadDiograph = createAsyncThunk("diory/loadDiograph", async () => {
@@ -10,16 +11,19 @@ export const loadDiograph = createAsyncThunk("diory/loadDiograph", async () => {
   const diographContents = await httpClient.readTextItem("diograph.json");
   const diographJson = JSON.parse(diographContents);
   validateDiograph(diographJson);
+  return diographJson;
   return new Diograph(diographJson);
 });
 
 // Define the initial state using the DioryInfo shape
-interface DioryState extends DioryInfo {}
+interface DioryState extends Omit<DioryInfo, "diograph"> {
+  diograph: IDiographObject;
+}
 
 const initialState: DioryState = {
   diograph: null,
   // Using default focus "/" until overwritten via setFocus
-  focusId: "/",
+  focusId: null,
   storyId: null,
   story: null,
   stories: [],
@@ -58,18 +62,18 @@ const diorySlice = createSlice({
         // Copy over all fields from info into the state
         state.focusId = info.focusId;
         state.storyId = info.storyId;
-        state.story = info.story;
+        // state.story = info.story;
         state.stories = info.stories;
         state.prev = info.prev;
         state.next = info.next;
-        state.focus = info.focus;
-        state.focusDiory = info.focusDiory;
+        // state.focus = info.focus;
+        // state.focusDiory = info.focusDiory;
         state.relatedGeo = info.relatedGeo;
         state.relatedTime = info.relatedTime;
         state.relatedStories = info.relatedStories;
-        state.delete = info.delete;
-        state.link = info.link;
-        state.edit = info.edit;
+        // state.delete = info.delete;
+        // state.link = info.link;
+        // state.edit = info.edit;
       }
     },
     // setStoryDiory allows updating just the story piece of the state.
@@ -80,24 +84,24 @@ const diorySlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(
       loadDiograph.fulfilled,
-      (state, action: PayloadAction<Diograph>) => {
+      (state, action: PayloadAction<IDiographObject>) => {
         state.diograph = action.payload;
         // Once loaded, initialize the state with a default focus ("/")
         const info = getDioryInfo(action.payload, "/");
         state.focusId = info.focusId;
         state.storyId = info.storyId;
-        state.story = info.story;
+        // state.story = info.story;
         state.stories = info.stories;
         state.prev = info.prev;
         state.next = info.next;
-        state.focus = info.focus;
-        state.focusDiory = info.focusDiory;
+        // state.focus = info.focus;
+        // state.focusDiory = info.focusDiory;
         state.relatedGeo = info.relatedGeo;
         state.relatedTime = info.relatedTime;
         state.relatedStories = info.relatedStories;
-        state.delete = info.delete;
-        state.link = info.link;
-        state.edit = info.edit;
+        // state.delete = info.delete;
+        // state.link = info.link;
+        // state.edit = info.edit;
       }
     );
   },

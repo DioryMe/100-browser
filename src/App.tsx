@@ -1,10 +1,27 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import HomePage from "./homePage";
-import "./App.css";
-import ContentSwipes from "./ContentSwipes";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loadDiograph } from "./store/diorySlice";
+import { RootState, AppDispatch } from "./store/store";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Grid from "./Grid";
+import HomePage from "./homePage";
 
 const App = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { diograph } = useSelector((state: RootState) => state.diory);
+
+  // Load the diograph only once when the App mounts
+  useEffect(() => {
+    if (!diograph) {
+      dispatch(loadDiograph());
+    }
+  }, [diograph, dispatch]);
+
+  // You might want to show a loading indicator until the diograph is loaded
+  if (!diograph) {
+    return <div>Loading diograph...</div>;
+  }
+
   return (
     <BrowserRouter>
       <Routes>

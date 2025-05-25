@@ -1,9 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import diograph from "../diograph.json";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "./store/store";
+import { setFocus } from "./store/diorySlice";
 
 const Grid = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const stateDiory = useSelector((state: RootState) => state.diory);
+  const { focusId: stateFocusId } = stateDiory;
+  const { focusId: urlParamFocusId } = useParams();
+
+  useEffect(() => {
+    if (urlParamFocusId && urlParamFocusId !== stateFocusId) {
+      dispatch(setFocus({ focusId: urlParamFocusId }));
+    }
+    if (stateFocusId) {
+      navigate(`/diory/${stateFocusId}/grid`);
+    }
+  }, [stateFocusId, urlParamFocusId, dispatch, navigate]);
 
   // 1) Map the JSON object into an array with flags in state
   const [dioryArray, setDioryArray] = useState(() =>
@@ -22,6 +38,7 @@ const Grid = () => {
         item.dioryId === id ? { ...item, selected: !item.selected } : item
       )
     );
+    dispatch(setFocus({ focusId: id }));
   };
   // 2) Inline styles for grid and items
   const gridStyle = {
