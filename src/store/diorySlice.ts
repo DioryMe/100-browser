@@ -22,6 +22,9 @@ interface DioryState {
   focusId: string | null;
   storyId: string | null;
   storyDiories: IDioryObject[];
+  prevId: string;
+  nextId: string;
+  stories: IDioryObject[];
 }
 
 const initialState: DioryState = {
@@ -29,6 +32,9 @@ const initialState: DioryState = {
   focusId: null,
   storyId: null,
   storyDiories: [],
+  prevId: null,
+  nextId: null,
+  stories: [],
 };
 
 const getStoryDiories = (storyId: string, diograph: IDiographObject) => {
@@ -37,6 +43,42 @@ const getStoryDiories = (storyId: string, diograph: IDiographObject) => {
   return storyDiory.links.map((link) =>
     diographInstance.getDiory({ id: link.id }).toObject()
   );
+};
+
+const getStories = (focusId: string, diograph: IDiographObject) => {
+  return Object.values(diograph).filter((dioryData: IDioryObject) =>
+    dioryData.links?.some((link) => link.id === focusId)
+  );
+};
+
+// const storyDioryId = storyId || (stories[0] && stories[0].id) || null;
+
+const getPrevNext = (storyDioryId, focusId, diograph) => {
+  let prevId = null;
+  let nextId = null;
+  const diographInstance = new Diograph(diograph);
+  const storyDiory = diographInstance.getDiory({ id: storyDioryId });
+
+  const focusDioryIndexInStory =
+    storyDiory.links?.findIndex((link) => link.id === focusId) ?? -1;
+
+  const prevTargetIndex = focusDioryIndexInStory - 1;
+  const nextTargetIndex = focusDioryIndexInStory + 1;
+
+  const prevDisabled =
+    !storyDiory.links ||
+    prevTargetIndex < 0 ||
+    prevTargetIndex >= storyDiory.links.length;
+
+  const nextDisabled =
+    !storyDiory.links ||
+    nextTargetIndex < 0 ||
+    nextTargetIndex >= storyDiory.links.length;
+
+  prevId = prevDisabled ? null : storyDiory.links![prevTargetIndex].id;
+  nextId = nextDisabled ? null : storyDiory.links![nextTargetIndex].id;
+
+  return { prevId, nextId };
 };
 
 const diorySlice = createSlice({
@@ -51,6 +93,10 @@ const diorySlice = createSlice({
       state.focusId = focusId;
       state.storyId = storyId;
       state.storyDiories = getStoryDiories(storyId, state.diograph);
+      const { prevId, nextId } = getPrevNext(storyId, focusId, state.diograph);
+      state.prevId = prevId;
+      state.nextId = nextId;
+      state.stories = getStories(focusId, state.diograph);
     },
     // setStoryDiory allows updating just the story piece of the state.
     setStory(state, action: PayloadAction<any>) {
