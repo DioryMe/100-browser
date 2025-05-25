@@ -39,9 +39,10 @@ const diorySlice = createSlice({
     ) {
       const { focusId, storyId } = action.payload;
       state.focusId = focusId;
+      state.storyId = storyId;
     },
     // setStoryDiory allows updating just the story piece of the state.
-    setStoryDiory(state, action: PayloadAction<any>) {
+    setStory(state, action: PayloadAction<any>) {
       state.storyId = action.payload;
     },
     setDiograph(state, action: PayloadAction<any>) {
@@ -58,5 +59,5 @@ const diorySlice = createSlice({
   },
 });
 
-export const { setFocus, setStoryDiory, setDiograph } = diorySlice.actions;
+export const { setFocus, setStory, setDiograph } = diorySlice.actions;
 export default diorySlice.reducer;

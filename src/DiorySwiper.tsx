@@ -9,6 +9,7 @@ import { IDioryObject } from "@diograph/diograph/types";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "./store/store";
 import { setFocus, setStoryDiory } from "./store/diorySlice";
+import { Diograph } from "@diograph/diograph";
 
 interface Props {
   createSlide: (diory: IDioryObject, key: number) => ReactNode;
@@ -105,7 +106,8 @@ const DiorySwiper = ({ createSlide }: Props) => {
         >
           {slides.map((id, i) => {
             if (id) {
-              const diory = diograph.getDiory({ id: id });
+              const diographInstance = new Diograph(diograph);
+              const diory = diographInstance.getDiory({ id: id });
               return createSlide(diory, i);
             }
             return null;
