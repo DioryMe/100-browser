@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/store";
 import { setFocus } from "./store/diorySlice";
 import { badgeStyle, getSelectedItemStyle, gridStyle } from "./GridStyle";
+import { Diograph } from "@diograph/diograph";
 
 const Grid = () => {
   const { search } = useLocation();
@@ -29,15 +30,20 @@ const Grid = () => {
   const [dioryArray, setDioryArray] = useState([]);
 
   useEffect(() => {
-    if (diograph) {
+    if (diograph && storyId) {
+      const diographInstance = new Diograph(diograph);
+      const storyDiory = diographInstance.getDiory({ id: storyId });
       setDioryArray(
-        Object.values(diograph).map((diory) => ({
-          dioryId: diory.id,
-          image: diory.image,
-        }))
+        storyDiory.links.map((link) => {
+          const linkedDiory = diographInstance.getDiory({ id: link.id });
+          return {
+            dioryId: linkedDiory.id,
+            image: linkedDiory.image,
+          };
+        })
       );
     }
-  }, [diograph]);
+  }, [diograph, storyId]);
 
   const focusSelected = (id: string) => {
     console.log("new", stateDiory);
