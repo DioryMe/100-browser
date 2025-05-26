@@ -51,8 +51,6 @@ const getStories = (focusId: string, diograph: IDiographObject) => {
   );
 };
 
-// const storyDioryId = storyId || (stories[0] && stories[0].id) || null;
-
 const getPrevNext = (storyDioryId, focusId, diograph) => {
   let prevId = null;
   let nextId = null;
@@ -91,12 +89,13 @@ const diorySlice = createSlice({
     ) {
       const { focusId, storyId } = action.payload;
       state.focusId = focusId;
-      state.storyId = storyId;
+      state.stories = getStories(focusId, state.diograph);
+      state.storyId =
+        storyId || (state.stories[0] && state.stories[0].id) || null;
       state.storyDiories = getStoryDiories(storyId, state.diograph);
       const { prevId, nextId } = getPrevNext(storyId, focusId, state.diograph);
       state.prevId = prevId;
       state.nextId = nextId;
-      state.stories = getStories(focusId, state.diograph);
     },
     // setStoryDiory allows updating just the story piece of the state.
     setStory(state, action: PayloadAction<any>) {
