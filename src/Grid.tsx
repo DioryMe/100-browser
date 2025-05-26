@@ -4,14 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/store";
 import { setFocus } from "./store/diorySlice";
 import { badgeStyle, getSelectedItemStyle, gridStyle } from "./GridStyle";
-import { Diograph } from "@diograph/diograph";
 
 const Grid = () => {
   const { search } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const stateDiory = useSelector((state: RootState) => state.diory);
-  const { focusId, storyId, diograph, storyDiories } = stateDiory;
+  const { focusId, storyId, storyDiories, stories } = stateDiory;
   const { focusId: urlParamFocusId } = useParams();
 
   useEffect(() => {
@@ -33,9 +32,26 @@ const Grid = () => {
     dispatch(setFocus({ focusId: id, storyId }));
   };
 
+  const selectedHasMultipleStories = stories.length > 1;
+  const otherStory = stories.find((story) => story.id !== storyId);
+
   return (
     <>
       <button onClick={() => navigate(`/`)}>Back</button>
+      {selectedHasMultipleStories && (
+        <button
+          onClick={() =>
+            dispatch(
+              setFocus({
+                focusId: focusId,
+                storyId: otherStory.id,
+              })
+            )
+          }
+        >
+          {`Change to story '${otherStory.text}'`}
+        </button>
+      )}
       <div style={gridStyle}>
         {storyDiories.map(({ id: dioryId, image }) => (
           <div
