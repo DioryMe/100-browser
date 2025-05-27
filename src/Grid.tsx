@@ -33,6 +33,36 @@ const Grid = () => {
     }
   }, [focusId, urlParamFocusId]);
 
+  // Functions for previous/next diory navigation
+  const focusPrevious = () => {
+    const currentIndex = storyDiories.findIndex((item) => item.id === focusId);
+    if (currentIndex > 0) {
+      const prev = storyDiories[currentIndex - 1];
+      dispatch(setFocus({ focusId: prev.id, storyId }));
+    }
+  };
+
+  const focusNext = () => {
+    const currentIndex = storyDiories.findIndex((item) => item.id === focusId);
+    if (currentIndex !== -1 && currentIndex < storyDiories.length - 1) {
+      const next = storyDiories[currentIndex + 1];
+      dispatch(setFocus({ focusId: next.id, storyId }));
+    }
+  };
+
+  // Bind left and right arrow keys for navigation.
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        focusPrevious();
+      } else if (e.key === "ArrowRight") {
+        focusNext();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [storyDiories, focusId, storyId]);
+
   const focusSelected = (id: string) => {
     console.log("new", stateDiory);
     if (id === focusId) {
@@ -59,7 +89,18 @@ const Grid = () => {
 
   return (
     <>
-      <button onClick={() => navigate(`/`)}>Back</button>
+      <div
+        style={{
+          display: "flex",
+          gap: "10px",
+          alignItems: "center",
+          marginBottom: "10px",
+        }}
+      >
+        <button onClick={() => navigate(`/`)}>Back</button>
+        <button onClick={focusPrevious}>&larr;</button>
+        <button onClick={focusNext}>&rarr;</button>
+      </div>
       {selectedHasMultipleStories && otherStory && (
         <button
           onClick={() =>
