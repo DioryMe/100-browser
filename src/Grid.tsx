@@ -4,15 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/store";
 import { setFocus } from "./store/diorySlice";
 
-// Grid style for non-selected items.
 export const gridStyle = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
   gap: "10px",
   padding: "10px",
 };
-
-// Removed getSelectedItemStyle and badgeStyle as they are no longer needed.
 
 const Grid = () => {
   const { search } = useLocation();
