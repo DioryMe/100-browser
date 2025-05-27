@@ -1,9 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/store";
 import { setFocus } from "./store/diorySlice";
-import { badgeStyle, getSelectedItemStyle, gridStyle } from "./GridStyle";
+
+// Grid style for non-selected items.
+export const gridStyle = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+  gap: "10px",
+  padding: "10px",
+};
+
+// Removed getSelectedItemStyle and badgeStyle as they are no longer needed.
 
 const Grid = () => {
   const { search } = useLocation();
@@ -35,10 +44,23 @@ const Grid = () => {
   const selectedHasMultipleStories = stories.length > 1;
   const otherStory = stories.find((story) => story.id !== storyId);
 
+  // Partition the items so that (if one is selected) items before in the array will be rendered above,
+  // the selected item will be rendered full-width in its own section, and items after will be rendered below.
+  const selectedIndex = storyDiories.findIndex((item) => item.id === focusId);
+  let itemsBefore = [];
+  let selectedItem = null;
+  let itemsAfter = [];
+
+  if (selectedIndex !== -1) {
+    itemsBefore = storyDiories.slice(0, selectedIndex);
+    selectedItem = storyDiories[selectedIndex];
+    itemsAfter = storyDiories.slice(selectedIndex + 1);
+  }
+
   return (
     <>
       <button onClick={() => navigate(`/`)}>Back</button>
-      {selectedHasMultipleStories && (
+      {selectedHasMultipleStories && otherStory && (
         <button
           onClick={() =>
             dispatch(
@@ -52,24 +74,53 @@ const Grid = () => {
           {`Change to story '${otherStory.text}'`}
         </button>
       )}
-      <div style={gridStyle}>
-        {storyDiories.map(({ id: dioryId, image }) => (
-          <div
-            key={dioryId}
-            style={focusId === dioryId ? getSelectedItemStyle() : {}}
-            onClick={() => focusSelected(dioryId)}
-          >
-            <img
-              src={image}
-              alt={dioryId}
-              style={{ width: "100%", height: "auto" }}
-            />
-            {focusId === dioryId && (
-              <div style={{ ...badgeStyle }}>Selected</div>
-            )}
+      {selectedItem ? (
+        <>
+          <div style={gridStyle}>
+            {itemsBefore.map(({ id, image }) => (
+              <div key={id} onClick={() => focusSelected(id)}>
+                <img
+                  src={image}
+                  alt={id}
+                  style={{ width: "100%", height: "auto" }}
+                />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+          <div style={{ width: "100%", padding: "10px" }}>
+            <div onClick={() => focusSelected(selectedItem.id)}>
+              <img
+                src={selectedItem.image}
+                alt={selectedItem.id}
+                style={{ width: "100%", height: "auto" }}
+              />
+            </div>
+          </div>
+          <div style={gridStyle}>
+            {itemsAfter.map(({ id, image }) => (
+              <div key={id} onClick={() => focusSelected(id)}>
+                <img
+                  src={image}
+                  alt={id}
+                  style={{ width: "100%", height: "auto" }}
+                />
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <div style={gridStyle}>
+          {storyDiories.map(({ id, image }) => (
+            <div key={id} onClick={() => focusSelected(id)}>
+              <img
+                src={image}
+                alt={id}
+                style={{ width: "100%", height: "auto" }}
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </>
   );
 };
