@@ -61,9 +61,8 @@ const Grid = () => {
   }, [storyDiories, focusId, storyId]);
 
   const focusSelected = (id: string) => {
-    console.log("new", stateDiory);
     if (id === focusId) {
-      alert("Go to content");
+      navigate(`/diory/${id}/content?storyId=${storyId}`);
     }
     dispatch(setFocus({ focusId: id, storyId }));
   };

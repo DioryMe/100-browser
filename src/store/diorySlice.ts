@@ -38,6 +38,7 @@ const initialState: DioryState = {
 };
 
 const getStoryDiories = (storyId: string, diograph: IDiographObject) => {
+  if (!storyId) return null;
   const diographInstance = new Diograph(diograph);
   const storyDiory = diographInstance.getDiory({ id: storyId });
   return storyDiory.links.map((link) =>
@@ -51,11 +52,12 @@ const getStories = (focusId: string, diograph: IDiographObject) => {
   );
 };
 
-const getPrevNext = (storyDioryId, focusId, diograph) => {
+const getPrevNext = (storyId, focusId, diograph) => {
+  if (!storyId) return null;
   let prevId = null;
   let nextId = null;
   const diographInstance = new Diograph(diograph);
-  const storyDiory = diographInstance.getDiory({ id: storyDioryId });
+  const storyDiory = diographInstance.getDiory({ id: storyId });
 
   const focusDioryIndexInStory =
     storyDiory.links?.findIndex((link) => link.id === focusId) ?? -1;
@@ -92,8 +94,12 @@ const diorySlice = createSlice({
       state.stories = getStories(focusId, state.diograph);
       state.storyId =
         storyId || (state.stories[0] && state.stories[0].id) || null;
-      state.storyDiories = getStoryDiories(storyId, state.diograph);
-      const { prevId, nextId } = getPrevNext(storyId, focusId, state.diograph);
+      state.storyDiories = getStoryDiories(state.storyId, state.diograph);
+      const { prevId, nextId } = getPrevNext(
+        state.storyId,
+        focusId,
+        state.diograph
+      );
       state.prevId = prevId;
       state.nextId = nextId;
     },
