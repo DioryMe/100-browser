@@ -76,7 +76,7 @@ const Grid = () => {
   };
 
   const selectedHasMultipleStories = stories.length > 1;
-  const otherStory = stories.find((story) => story.id !== storyId);
+  const otherStories = stories.filter((story) => story.id !== storyId);
 
   // Partition the items so that (if one is selected) items before in the array will be rendered above,
   // the selected item will be rendered full-width in its own section, and items after will be rendered below.
@@ -105,20 +105,21 @@ const Grid = () => {
         <button onClick={focusPrevious}>&larr;</button>
         <button onClick={focusNext}>&rarr;</button>
       </div>
-      {selectedHasMultipleStories && otherStory && (
-        <button
-          onClick={() =>
-            dispatch(
-              setFocus({
-                focusId: focusId,
-                storyId: otherStory.id,
-              })
-            )
-          }
-        >
-          {`Change to story '${otherStory.text}'`}
-        </button>
-      )}
+      {selectedHasMultipleStories &&
+        otherStories.map((otherStory) => (
+          <button
+            onClick={() =>
+              dispatch(
+                setFocus({
+                  focusId: focusId,
+                  storyId: otherStory.id,
+                })
+              )
+            }
+          >
+            {`${otherStory.text}`}
+          </button>
+        ))}
       {selectedItem ? (
         <>
           <div style={gridStyle}>

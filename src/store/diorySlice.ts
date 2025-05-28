@@ -8,7 +8,10 @@ import { IDiographObject, IDioryObject } from "@diograph/diograph/types";
 
 // Thunk action to asynchronously load the diograph
 export const loadDiograph = createAsyncThunk("diory/loadDiograph", async () => {
-  const httpClient = new HttpClient("http://diory-demo-content.surge.sh");
+  // const httpClient = new HttpClient("http://diory-demo-content.surge.sh");
+  const httpClient = new HttpClient(
+    "https://raw.githubusercontent.com/DioryMe/demo-content-room/refs/heads/main"
+  );
   const diographContents = await httpClient.readTextItem("diograph.json");
   const diographJson = JSON.parse(diographContents);
   validateDiograph(diographJson);

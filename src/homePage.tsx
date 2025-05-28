@@ -33,7 +33,7 @@ const HomePage = () => {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "space-between",
-              height: "300px", // Adjust height as needed
+              height: "300hw", // Adjust height as needed
             }}
           >
             {/* Image container to center the image vertically */}
@@ -45,23 +45,23 @@ const HomePage = () => {
                 justifyContent: "center",
                 width: "100%",
               }}
+              onClick={() => {
+                // TODO: Set first diory of the story in focus
+                const firstDioryOfStory = Object.values(
+                  diograph[story.id].links
+                )[0].id;
+                dispatch(
+                  setFocus({
+                    focusId: firstDioryOfStory,
+                    storyId: story.id,
+                  })
+                );
+                navigate(
+                  `/diory/${firstDioryOfStory}/grid?storyId=${story.id}`
+                );
+              }}
             >
               <img
-                onClick={() => {
-                  // TODO: Set first diory of the story in focus
-                  const firstDioryOfStory = Object.values(
-                    diograph[story.id].links
-                  )[0].id;
-                  dispatch(
-                    setFocus({
-                      focusId: firstDioryOfStory,
-                      storyId: story.id,
-                    })
-                  );
-                  navigate(
-                    `/diory/${firstDioryOfStory}/grid?storyId=${story.id}`
-                  );
-                }}
                 src={diograph[story.id].image}
                 style={{
                   maxWidth: "100%",
