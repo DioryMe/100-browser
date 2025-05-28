@@ -11,6 +11,17 @@ export const gridStyle = {
   padding: "10px",
 };
 
+export const badgeStyle = {
+  position: "absolute",
+  top: "5px",
+  left: "5px",
+  padding: "2px 4px",
+  backgroundColor: "grey",
+  color: "#fff",
+  fontSize: "12px",
+  borderRadius: "2px",
+};
+
 const Grid = () => {
   const { search } = useLocation();
   const navigate = useNavigate();
@@ -135,11 +146,16 @@ const Grid = () => {
           </div>
           <div style={{ width: "100%", padding: "10px" }}>
             <div onClick={() => focusSelected(selectedItem.id)}>
-              <img
-                src={selectedItem.image}
-                alt={selectedItem.id}
-                style={{ width: "100%", height: "auto" }}
-              />
+              <div style={{ position: "relative" }}>
+                {selectedItem.text && (
+                  <div style={{ ...badgeStyle }}>{selectedItem.text}</div>
+                )}
+                <img
+                  src={selectedItem.image}
+                  alt={selectedItem.id}
+                  style={{ width: "100%", height: "auto" }}
+                />
+              </div>
             </div>
           </div>
           <div style={gridStyle}>
