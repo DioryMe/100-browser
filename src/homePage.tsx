@@ -1,19 +1,21 @@
 import { useNavigate } from "react-router-dom";
 
-import diograph from "../diograph.json";
+// import diograph from "../diograph.json";
 import { setFocus, setStory } from "./store/diorySlice";
-import { useDispatch } from "react-redux";
-const rootDiory = diograph["22185bcd-c09f-4f16-b613-af5f3c81150c"];
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "./store/store";
+// const rootDiory = diograph["22185bcd-c09f-4f16-b613-af5f3c81150c"];
 
-// ... existing code ...
 const HomePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { diograph } = useSelector((state: RootState) => state.diory);
+  const rootDiory = diograph["/"];
+
   return (
     <div>
       <h2>{rootDiory.text}</h2>
-      {/* Two-column grid container */}
       {/* Two-column grid container */}
       <div
         style={{

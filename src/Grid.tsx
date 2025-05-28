@@ -16,7 +16,7 @@ const Grid = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const stateDiory = useSelector((state: RootState) => state.diory);
-  const { focusId, storyId, storyDiories, stories } = stateDiory;
+  const { diograph, focusId, storyId, storyDiories, stories } = stateDiory;
   const { focusId: urlParamFocusId } = useParams();
 
   useEffect(() => {
@@ -61,6 +61,14 @@ const Grid = () => {
   }, [storyDiories, focusId, storyId]);
 
   const focusSelected = (id: string) => {
+    const dioryInFocus = storyDiories.find((item) => item.id === id);
+    if (dioryInFocus.links && dioryInFocus.links.length && id === focusId) {
+      const firstDioryIdOfStory = Object.values(
+        diograph[dioryInFocus.id].links
+      )[0].id;
+      dispatch(setFocus({ focusId: firstDioryIdOfStory, storyId: id }));
+      return;
+    }
     if (id === focusId) {
       navigate(`/diory/${id}/content?storyId=${storyId}`);
     }

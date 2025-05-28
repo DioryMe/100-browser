@@ -4,13 +4,13 @@ import { Diograph } from "@diograph/diograph";
 import { HttpClient } from "@diograph/http-client";
 import { validateDiograph } from "@diograph/diograph/validator";
 import { IDiographObject, IDioryObject } from "@diograph/diograph/types";
-import diographJson from "../../diograph.json";
+// import diographJson from "../../diograph.json";
 
 // Thunk action to asynchronously load the diograph
 export const loadDiograph = createAsyncThunk("diory/loadDiograph", async () => {
-  // const httpClient = new HttpClient("http://diory-demo-content.surge.sh");
-  // const diographContents = await httpClient.readTextItem("diograph.json");
-  // const diographJson = JSON.parse(diographContents);
+  const httpClient = new HttpClient("http://diory-demo-content.surge.sh");
+  const diographContents = await httpClient.readTextItem("diograph.json");
+  const diographJson = JSON.parse(diographContents);
   validateDiograph(diographJson);
   return diographJson;
   // return new Diograph(diographJson);
