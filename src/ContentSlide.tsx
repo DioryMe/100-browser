@@ -7,17 +7,19 @@ import { RootState } from "./store/store";
 export const ContentSlide = ({ diory }: { diory: IDioryObject }) => {
   const navigate = useNavigate();
   const { storyId } = useSelector((state: RootState) => state.diory);
+  // Select the blob URL from Redux using the diory id
+  const contentUrl = useSelector(
+    (state: RootState) => state.diory.contentUrls[diory.id]
+  );
+
+  // Removed the useEffect here that previously loaded content.
 
   return (
-    <div
-      className={styles.fullImage}
-      style={{
-        cursor: "grab",
-      }}
-    >
+    <div className={styles.fullImage} style={{ cursor: "grab" }}>
       <img
         onClick={() => navigate(`/diory/${diory.id}/grid/?storyId=${storyId}`)}
-        src={diory && diory.image}
+        // Use the blob URL if available; fallback to the diory.image otherwise.
+        src={contentUrl ? contentUrl : diory.image}
       />
     </div>
   );

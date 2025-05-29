@@ -7,7 +7,7 @@ import { IDioryObject } from "@diograph/diograph/types";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "./store/store";
 import { Diograph } from "@diograph/diograph";
-import { setFocus } from "./store/diorySlice";
+import { setFocus, loadDioryContent } from "./store/diorySlice";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 interface Props {
@@ -20,18 +20,14 @@ const DiorySwiper = ({ createSlide }: Props) => {
   const { focusId: urlParamFocusId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
 
-  const { diograph, storyId, focusId, prevId, nextId } = useSelector(
-    (state: RootState) => state.diory
-  );
+  // Include contentUrls here
+  const { diograph, storyId, focusId, prevId, nextId, contentUrls } =
+    useSelector((state: RootState) => state.diory);
 
   const [slides, setSlides] = useState<string[]>([]);
   const [swiper, setSwiper] = useState(null);
 
   useEffect(() => {
-    // if (focusId) {
-    //   navigate(`/diory/${focusId}/content?storyId=${storyId}`);
-    //   return;
-    // }
     if (!focusId && urlParamFocusId) {
       const storyId = new URLSearchParams(search).get("storyId");
       dispatch(setFocus({ focusId: urlParamFocusId, storyId }));
@@ -47,13 +43,29 @@ const DiorySwiper = ({ createSlide }: Props) => {
       dispatch(setFocus({ focusId, storyId }));
 
       if (swiper) {
-        // Couldn't get transition from Riverfest photo to event without this
+        // Recalibrate the activeIndex after slide addition.
         setTimeout(() => {
           swiper.slideTo(prevId ? 1 : 0, 0, false);
         }, 1);
       }
     }
   }, [focusId, swiper, diograph]);
+
+  // New effect: Ensure content for current slide diories is loaded in Redux.
+  useEffect(() => {
+    if (diograph && storyId) {
+      const neededIds = [prevId, focusId, nextId].filter((id) => id != null);
+      const diographInstance = new Diograph(diograph);
+      neededIds.forEach((id) => {
+        if (!contentUrls[id]) {
+          const diory = diographInstance.getDiory({ id });
+          if (diory && diory.data) {
+            dispatch(loadDioryContent(diory));
+          }
+        }
+      });
+    }
+  }, [diograph, storyId, prevId, focusId, nextId, contentUrls, dispatch]);
 
   return (
     focusId && (
@@ -74,26 +86,19 @@ const DiorySwiper = ({ createSlide }: Props) => {
               "Diory",
               `/diory/${prevId}/content?storyId=${storyId}`
             );
-
             dispatch(setFocus({ focusId: prevId }));
-
             if (prevId && !slides.includes(prevId)) {
               setSlides((slides) => [prevId, ...slides]);
-              // After adding slide in the beginning we need to recalibrate the activeIndex
               swiper.slideTo(swiper.activeIndex + 1, 0, false);
             }
           }}
-          // On swipe nextId on Diory or Content views
-          // - almost same as swipe back
           onSlideNextTransitionStart={(swiper) => {
             if (!nextId) return;
-
             window.history.replaceState(
               null,
               "Diory",
               `/diory/${nextId}/content?storyId=${storyId}`
             );
-
             if (nextId && !slides.includes(nextId)) {
               setSlides((slides) => [...slides, nextId]);
             }

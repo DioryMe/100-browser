@@ -6,6 +6,8 @@ import { validateDiograph } from "@diograph/diograph/validator";
 import { IDiographObject, IDioryObject } from "@diograph/diograph/types";
 // import diographJson from "../../diograph.json";
 
+export const loadDioryContent = {};
+
 // Thunk action to asynchronously load the diograph
 export const loadDiograph = createAsyncThunk("diory/loadDiograph", async () => {
   // const httpClient = new HttpClient("http://diory-demo-content.surge.sh");
@@ -28,6 +30,7 @@ interface DioryState {
   prevId: string;
   nextId: string;
   stories: IDioryObject[];
+  contentUrls: {};
 }
 
 const initialState: DioryState = {
@@ -38,6 +41,7 @@ const initialState: DioryState = {
   prevId: null,
   nextId: null,
   stories: [],
+  contentUrls: {},
 };
 
 const getStoryDiories = (storyId: string, diograph: IDiographObject) => {
@@ -92,11 +96,19 @@ const diorySlice = createSlice({
       state,
       action: PayloadAction<{ focusId: string; storyId?: string | null }>
     ) {
+      const oldStoryId = state.storyId;
       const { focusId, storyId } = action.payload;
       state.focusId = focusId;
       state.stories = getStories(focusId, state.diograph);
-      state.storyId =
+      const newStoryId =
         storyId || (state.stories[0] && state.stories[0].id) || null;
+      if (oldStoryId !== newStoryId) {
+        const focusContentUrl = state.contentUrls[storyId];
+        // TODO: Revoke urls before clearing them
+        state.contentUrls = {};
+        state.contentUrls[storyId] = focusContentUrl;
+      }
+      state.storyId = newStoryId;
       state.storyDiories = getStoryDiories(state.storyId, state.diograph);
       const { prevId, nextId } = getPrevNext(
         state.storyId,
@@ -121,6 +133,10 @@ const diorySlice = createSlice({
         state.diograph = action.payload;
       }
     );
+    builder.addCase(loadDioryContent.fulfilled, (state, action) => {
+      const { id, url } = action.payload;
+      state.contentUrls[id] = url;
+    });
   },
 });
 
