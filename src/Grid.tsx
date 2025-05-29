@@ -119,14 +119,15 @@ const Grid = () => {
       {selectedHasMultipleStories &&
         otherStories.map((otherStory) => (
           <button
-            onClick={() =>
+            onClick={() => {
               dispatch(
                 setFocus({
                   focusId: focusId,
                   storyId: otherStory.id,
                 })
-              )
-            }
+              );
+              navigate(`/diory/${focusId}/grid?storyId=${otherStory.id}`);
+            }}
           >
             {`${otherStory.text}`}
           </button>

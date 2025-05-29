@@ -81,12 +81,9 @@ const DiorySwiper = ({ createSlide }: Props) => {
           // - add slide if there is nextId diory doesn't exist yet
           onSlidePrevTransitionStart={(swiper) => {
             if (!prevId) return;
-            window.history.replaceState(
-              null,
-              "Diory",
-              `/diory/${prevId}/content?storyId=${storyId}`
-            );
-            dispatch(setFocus({ focusId: prevId }));
+            navigate(`/diory/${prevId}/content?storyId=${storyId}`);
+
+            dispatch(setFocus({ focusId: prevId, storyId }));
             if (prevId && !slides.includes(prevId)) {
               setSlides((slides) => [prevId, ...slides]);
               swiper.slideTo(swiper.activeIndex + 1, 0, false);
@@ -94,15 +91,11 @@ const DiorySwiper = ({ createSlide }: Props) => {
           }}
           onSlideNextTransitionStart={(swiper) => {
             if (!nextId) return;
-            window.history.replaceState(
-              null,
-              "Diory",
-              `/diory/${nextId}/content?storyId=${storyId}`
-            );
+            navigate(`/diory/${nextId}/content?storyId=${storyId}`);
             if (nextId && !slides.includes(nextId)) {
               setSlides((slides) => [...slides, nextId]);
             }
-            dispatch(setFocus({ focusId: nextId }));
+            dispatch(setFocus({ focusId: nextId, storyId }));
           }}
         >
           {slides.map((id, i) => {

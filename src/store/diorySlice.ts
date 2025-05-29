@@ -1,24 +1,43 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { DioryInfo, getDioryInfo } from "../utils/dioryInfo";
-import { Diograph } from "@diograph/diograph";
+import { constructAndLoadRoom, Diograph } from "@diograph/diograph";
 import { HttpClient } from "@diograph/http-client";
 import { validateDiograph } from "@diograph/diograph/validator";
 import { IDiographObject, IDioryObject } from "@diograph/diograph/types";
-// import diographJson from "../../diograph.json";
 
-export const loadDioryContent = {};
+const roomAddress1 =
+  "https://raw.githubusercontent.com/DioryMe/demo-content-room/refs/heads/main";
+const roomAddress2 = "http://diory-demo-content.surge.sh";
+const roomAddress = roomAddress2;
+
+// Replace the empty loadDioryContent with the following async thunk:
+export const loadDioryContent = createAsyncThunk(
+  "diory/loadDioryContent",
+  async (diory: IDioryObject) => {
+    // Verify the diory has content data
+    if (!diory.data || !diory.data.length) {
+      throw new Error("No content available in diory");
+    }
+    const cid = diory.data[0].contentUrl;
+    const mimeType = diory.data[0]["@type"];
+
+    // Create and load the room; ensure constructAndLoadRoom is correctly imported.
+    const room = await constructAndLoadRoom(roomAddress, "HttpClient", {
+      HttpClient: { clientConstructor: HttpClient },
+    });
+    const response = await room.readContent(cid);
+    const blob = new Blob([response], { type: mimeType });
+    // Return the diory id with the generated blob URL.
+    return { id: diory.id, url: URL.createObjectURL(blob) };
+  }
+);
 
 // Thunk action to asynchronously load the diograph
 export const loadDiograph = createAsyncThunk("diory/loadDiograph", async () => {
-  // const httpClient = new HttpClient("http://diory-demo-content.surge.sh");
-  const httpClient = new HttpClient(
-    "https://raw.githubusercontent.com/DioryMe/demo-content-room/refs/heads/main"
-  );
+  const httpClient = new HttpClient(roomAddress);
   const diographContents = await httpClient.readTextItem("diograph.json");
   const diographJson = JSON.parse(diographContents);
   validateDiograph(diographJson);
   return diographJson;
-  // return new Diograph(diographJson);
 });
 
 // Define the initial state using the DioryInfo shape
@@ -30,7 +49,7 @@ interface DioryState {
   prevId: string;
   nextId: string;
   stories: IDioryObject[];
-  contentUrls: {};
+  contentUrls: { [key: string]: string };
 }
 
 const initialState: DioryState = {
@@ -104,7 +123,7 @@ const diorySlice = createSlice({
         storyId || (state.stories[0] && state.stories[0].id) || null;
       if (oldStoryId !== newStoryId) {
         const focusContentUrl = state.contentUrls[storyId];
-        // TODO: Revoke urls before clearing them
+        // TODO: Revoke URLs if necessary before clearing them.
         state.contentUrls = {};
         state.contentUrls[storyId] = focusContentUrl;
       }
