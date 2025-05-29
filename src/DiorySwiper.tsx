@@ -1,5 +1,7 @@
 import { Swiper } from "swiper/react";
 import "swiper/css";
+import "swiper/css/zoom";
+import { Zoom } from "swiper/modules";
 import styles from "./DiorySwipes.module.css";
 
 import { ReactNode, useEffect, useState } from "react";
@@ -74,6 +76,8 @@ const DiorySwiper = ({ createSlide }: Props) => {
           onSwiper={setSwiper}
           speed={200}
           runCallbacksOnInit={false}
+          zoom={true} // Added prop: enable zoom functionality
+          modules={[Zoom]} // Added prop: include Zoom module for Swiper
           // On swipe back on Diory or Content views
           // - do nothing if you can't swipe to nextId
           // - update url to indicate focus change
@@ -82,7 +86,6 @@ const DiorySwiper = ({ createSlide }: Props) => {
           onSlidePrevTransitionStart={(swiper) => {
             if (!prevId) return;
             navigate(`/diory/${prevId}/content?storyId=${storyId}`);
-
             dispatch(setFocus({ focusId: prevId, storyId }));
             if (prevId && !slides.includes(prevId)) {
               setSlides((slides) => [prevId, ...slides]);

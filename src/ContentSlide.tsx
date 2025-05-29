@@ -12,15 +12,19 @@ export const ContentSlide = ({ diory }: { diory: IDioryObject }) => {
     (state: RootState) => state.diory.contentUrls[diory.id]
   );
 
-  // Removed the useEffect here that previously loaded content.
-
   return (
     <div className={styles.fullImage} style={{ cursor: "grab" }}>
-      <img
-        onClick={() => navigate(`/diory/${diory.id}/grid/?storyId=${storyId}`)}
-        // Use the blob URL if available; fallback to the diory.image otherwise.
-        src={contentUrl ? contentUrl : diory.image}
-      />
+      <div className="swiper-zoom-container">
+        {" "}
+        {/* Added container for Swiper zoom */}
+        <img
+          onClick={() =>
+            navigate(`/diory/${diory.id}/grid/?storyId=${storyId}`)
+          }
+          // Use the blob URL if available; fallback to the diory.image otherwise.
+          src={contentUrl ? contentUrl : diory.image}
+        />
+      </div>
     </div>
   );
 };
