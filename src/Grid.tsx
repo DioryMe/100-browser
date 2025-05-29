@@ -148,7 +148,9 @@ const Grid = () => {
             <div onClick={() => focusSelected(selectedItem.id)}>
               <div style={{ position: "relative" }}>
                 {selectedItem.text && (
-                  <div style={{ ...badgeStyle }}>{selectedItem.text}</div>
+                  <div style={{ ...(badgeStyle as any) }}>
+                    {selectedItem.text}
+                  </div>
                 )}
                 <img
                   src={selectedItem.image}

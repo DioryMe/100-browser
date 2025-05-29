@@ -72,7 +72,7 @@ const DiorySwiper = ({ createSlide }: Props) => {
             window.history.replaceState(
               null,
               "Diory",
-              `/diory/${prevId}/content`
+              `/diory/${prevId}/content?storyId=${storyId}`
             );
 
             dispatch(setFocus({ focusId: prevId }));
