@@ -9,6 +9,7 @@ export const gridStyle = {
   gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
   gap: "10px",
   padding: "10px",
+  marginTop: "30px",
 };
 
 export const badgeStyle = {
@@ -89,17 +90,11 @@ const Grid = () => {
   const selectedHasMultipleStories = stories.length > 1;
   const otherStories = stories.filter((story) => story.id !== storyId);
 
-  // Partition the items so that (if one is selected) items before in the array will be rendered above,
-  // the selected item will be rendered full-width in its own section, and items after will be rendered below.
   const selectedIndex = storyDiories.findIndex((item) => item.id === focusId);
-  let itemsBefore = [];
   let selectedItem = null;
-  let itemsAfter = [];
 
   if (selectedIndex !== -1) {
-    itemsBefore = storyDiories.slice(0, selectedIndex);
     selectedItem = storyDiories[selectedIndex];
-    itemsAfter = storyDiories.slice(selectedIndex + 1);
   }
 
   return (
@@ -110,6 +105,7 @@ const Grid = () => {
           gap: "10px",
           alignItems: "center",
           marginBottom: "10px",
+          height: "70px",
         }}
       >
         <button onClick={() => navigate(`/`)}>
@@ -119,9 +115,9 @@ const Grid = () => {
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path d="M3 9L12 2L21 9"></path>
@@ -129,77 +125,97 @@ const Grid = () => {
             <path d="M21 22H3"></path>
           </svg>
         </button>
+        {stories.find((story) => story.id === storyId)?.text}
+        {selectedHasMultipleStories &&
+          otherStories.map((otherStory) => (
+            <button
+              key={otherStory.id}
+              onClick={() => {
+                dispatch(
+                  setFocus({ focusId: focusId, storyId: otherStory.id })
+                );
+                navigate(`/diory/${focusId}/grid?storyId=${otherStory.id}`);
+              }}
+            >
+              {`${otherStory.text}`}
+            </button>
+          ))}
       </div>
-      {selectedHasMultipleStories &&
-        otherStories.map((otherStory) => (
-          <button
-            onClick={() => {
-              dispatch(
-                setFocus({
-                  focusId: focusId,
-                  storyId: otherStory.id,
-                })
-              );
-              navigate(`/diory/${focusId}/grid?storyId=${otherStory.id}`);
-            }}
-          >
-            {`${otherStory.text}`}
-          </button>
-        ))}
-      {selectedItem ? (
-        <>
-          <div style={gridStyle}>
-            {itemsBefore.map(({ id, image }) => (
-              <div key={id} onClick={() => focusSelected(id)}>
-                <img
-                  src={image}
-                  alt={id}
-                  style={{ width: "100%", height: "auto" }}
-                />
-              </div>
-            ))}
-          </div>
-          <div style={{ width: "100%", padding: "10px" }}>
-            <div onClick={() => focusSelected(selectedItem.id)}>
-              <div style={{ position: "relative" }}>
-                {selectedItem.text && (
-                  <div style={{ ...(badgeStyle as any) }}>
-                    {selectedItem.text}
-                  </div>
-                )}
-                <img
-                  src={selectedItem.image}
-                  alt={selectedItem.id}
-                  style={{ width: "100%", height: "auto" }}
-                />
-              </div>
-            </div>
-          </div>
-          <div style={gridStyle}>
-            {itemsAfter.map(({ id, image }) => (
-              <div key={id} onClick={() => focusSelected(id)}>
-                <img
-                  src={image}
-                  alt={id}
-                  style={{ width: "100%", height: "auto" }}
-                />
-              </div>
-            ))}
-          </div>
-        </>
-      ) : (
-        <div style={gridStyle}>
-          {storyDiories.map(({ id, image }) => (
-            <div key={id} onClick={() => focusSelected(id)}>
+
+      {/* Enlarged selected item with fixed height container for stable layout */}
+      {selectedItem && (
+        <div
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "10px",
+            height: "300px", // fixed height
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div onClick={() => focusSelected(selectedItem.id)}>
+            <div style={{ position: "relative" }}>
+              {selectedItem.text && (
+                <div style={badgeStyle as any}>{selectedItem.text}</div>
+              )}
               <img
-                src={image}
-                alt={id}
-                style={{ width: "100%", height: "auto" }}
+                src={selectedItem.image}
+                alt={selectedItem.id}
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  objectFit: "contain",
+                  display: "block",
+                  margin: "auto",
+                }}
               />
             </div>
-          ))}
+          </div>
         </div>
       )}
+
+      {/* Grid of items with square cells, centered content, and a gray dot if item has links */}
+      <div style={gridStyle}>
+        {storyDiories.map(({ id, image, links }) => (
+          <div
+            key={id}
+            onClick={() => focusSelected(id)}
+            style={{
+              position: "relative", // added for dot indicator positioning
+              border: id === focusId ? "2px solid blue" : "none",
+              aspectRatio: "1", // square cell
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {links && links.length > 0 && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "5px",
+                  left: "5px",
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  backgroundColor: "grey",
+                }}
+              />
+            )}
+            <img
+              src={image}
+              alt={id}
+              style={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+                objectFit: "contain",
+              }}
+            />
+          </div>
+        ))}
+      </div>
     </>
   );
 };
