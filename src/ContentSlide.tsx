@@ -18,9 +18,6 @@ export const ContentSlide = ({ diory }: { diory: IDioryObject }) => {
         {" "}
         {/* Added container for Swiper zoom */}
         <img
-          onClick={() =>
-            navigate(`/diory/${diory.id}/grid/?storyId=${storyId}`)
-          }
           // Use the blob URL if available; fallback to the diory.image otherwise.
           src={contentUrl ? contentUrl : diory.image}
         />

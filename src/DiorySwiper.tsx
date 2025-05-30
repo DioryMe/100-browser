@@ -70,48 +70,55 @@ const DiorySwiper = ({ createSlide }: Props) => {
   }, [diograph, storyId, prevId, focusId, nextId, contentUrls, dispatch]);
 
   return (
-    focusId && (
-      <div className={styles.swiperContainer}>
-        <Swiper
-          onSwiper={setSwiper}
-          speed={200}
-          runCallbacksOnInit={false}
-          zoom={true} // Added prop: enable zoom functionality
-          modules={[Zoom]} // Added prop: include Zoom module for Swiper
-          // On swipe back on Diory or Content views
-          // - do nothing if you can't swipe to nextId
-          // - update url to indicate focus change
-          // - retrieve nextId diory's diory info and update the state
-          // - add slide if there is nextId diory doesn't exist yet
-          onSlidePrevTransitionStart={(swiper) => {
-            if (!prevId) return;
-            navigate(`/diory/${prevId}/content?storyId=${storyId}`);
-            dispatch(setFocus({ focusId: prevId, storyId }));
-            if (prevId && !slides.includes(prevId)) {
-              setSlides((slides) => [prevId, ...slides]);
-              swiper.slideTo(swiper.activeIndex + 1, 0, false);
-            }
-          }}
-          onSlideNextTransitionStart={(swiper) => {
-            if (!nextId) return;
-            navigate(`/diory/${nextId}/content?storyId=${storyId}`);
-            if (nextId && !slides.includes(nextId)) {
-              setSlides((slides) => [...slides, nextId]);
-            }
-            dispatch(setFocus({ focusId: nextId, storyId }));
-          }}
-        >
-          {slides.map((id, i) => {
-            if (id) {
-              const diographInstance = new Diograph(diograph);
-              const diory = diographInstance.getDiory({ id: id });
-              return createSlide(diory, i);
-            }
-            return null;
-          })}
-        </Swiper>
+    <>
+      <div
+        onClick={() => navigate(`/diory/${focusId}/grid/?storyId=${storyId}`)}
+      >
+        Back
       </div>
-    )
+      {focusId && (
+        <div className={styles.swiperContainer}>
+          <Swiper
+            onSwiper={setSwiper}
+            speed={200}
+            runCallbacksOnInit={false}
+            zoom={true} // Added prop: enable zoom functionality
+            modules={[Zoom]} // Added prop: include Zoom module for Swiper
+            // On swipe back on Diory or Content views
+            // - do nothing if you can't swipe to nextId
+            // - update url to indicate focus change
+            // - retrieve nextId diory's diory info and update the state
+            // - add slide if there is nextId diory doesn't exist yet
+            onSlidePrevTransitionStart={(swiper) => {
+              if (!prevId) return;
+              navigate(`/diory/${prevId}/content?storyId=${storyId}`);
+              dispatch(setFocus({ focusId: prevId, storyId }));
+              if (prevId && !slides.includes(prevId)) {
+                setSlides((slides) => [prevId, ...slides]);
+                swiper.slideTo(swiper.activeIndex + 1, 0, false);
+              }
+            }}
+            onSlideNextTransitionStart={(swiper) => {
+              if (!nextId) return;
+              navigate(`/diory/${nextId}/content?storyId=${storyId}`);
+              if (nextId && !slides.includes(nextId)) {
+                setSlides((slides) => [...slides, nextId]);
+              }
+              dispatch(setFocus({ focusId: nextId, storyId }));
+            }}
+          >
+            {slides.map((id, i) => {
+              if (id) {
+                const diographInstance = new Diograph(diograph);
+                const diory = diographInstance.getDiory({ id: id });
+                return createSlide(diory, i);
+              }
+              return null;
+            })}
+          </Swiper>
+        </div>
+      )}
+    </>
   );
 };
 
