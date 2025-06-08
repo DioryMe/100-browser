@@ -1,24 +1,35 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loadDiograph } from "./store/diorySlice";
+import { RootState, AppDispatch } from "./store/store";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Grid from "./Grid";
 import HomePage from "./homePage";
-import "./App.css";
 import ContentSwipes from "./ContentSwipes";
-import DiorySwipes from "./DiorySwipes";
-import { DiosphereProvider } from "./DiosphereContext";
 
 const App = () => {
-  // NOTE: The whole app re-renders when context changes
+  const dispatch = useDispatch<AppDispatch>();
+  const { diograph } = useSelector((state: RootState) => state.diory);
+
+  useEffect(() => {
+    if (!diograph) {
+      dispatch(loadDiograph());
+    }
+  }, [diograph, dispatch]);
+
+  if (!diograph) {
+    return <div>Loading diograph...</div>;
+  }
+
   return (
-    <DiosphereProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate replace to="/home" />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/diory/:focusId" element={<DiorySwipes />} />
-          <Route path="/diory/:focusId/content" element={<ContentSwipes />} />
-          <Route path="/*" element={"Not found"} />
-        </Routes>
-      </BrowserRouter>
-    </DiosphereProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/diory/:focusId/grid" element={<Grid />} />
+        <Route path="/diory/:focusId/content" element={<ContentSwipes />} />
+        <Route path="/*" element={"Not found"} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
