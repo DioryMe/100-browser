@@ -8,7 +8,8 @@ const roomAddress1 =
   "https://raw.githubusercontent.com/DioryMe/demo-content-room/refs/heads/main";
 const roomAddress2 = "http://diory-demo-content.surge.sh";
 const roomAddress3 = "http://localhost:8080/RoomName";
-const roomAddress = roomAddress3;
+const roomAddress4 = "http://localhost:8080/OopeeDiory";
+const roomAddress = roomAddress4;
 
 // const token1 = "Bearer e10d1d2e-032e-4c42-bc53-587239a3119f";
 const basicAuthToken = "e10d1d2e-032e-4c42-bc53-587239a3119f";
@@ -22,7 +23,7 @@ export const loadDioryContent = createAsyncThunk(
       throw new Error("No content available in diory");
     }
     const cid = diory.data[0].contentUrl;
-    const mimeType = diory.data[0]["@type"];
+    const mimeType = diory.data[0]["encodingFormat"];
 
     // Create and load the room; ensure constructAndLoadRoom is correctly imported.
     const room = await constructAndLoadRoom(roomAddress, "HttpClient", {
@@ -31,10 +32,11 @@ export const loadDioryContent = createAsyncThunk(
         credentials: { basicAuthToken },
       },
     });
+    console.log("BOOM", cid);
     const response = await room.readContent(cid);
     const blob = new Blob([response], { type: mimeType });
     // Return the diory id with the generated blob URL.
-    return { id: diory.id, url: URL.createObjectURL(blob) };
+    return { id: diory.id, url: URL.createObjectURL(blob), mimeType };
   }
 );
 
@@ -43,6 +45,7 @@ export const loadDiograph = createAsyncThunk("diory/loadDiograph", async () => {
   const httpClient = new HttpClient(roomAddress, {
     basicAuthToken,
   });
+  // const httpClient = new HttpClient(roomAddress);
   const diographContents = await httpClient.readTextItem("diograph.json");
   const diographJson = JSON.parse(diographContents);
   validateDiograph(diographJson);
@@ -58,7 +61,7 @@ interface DioryState {
   prevId: string;
   nextId: string;
   stories: IDioryObject[];
-  contentUrls: { [key: string]: string };
+  contentUrls: { [key: string]: { url: string; mimeType: string } };
 }
 
 const initialState: DioryState = {
@@ -162,8 +165,8 @@ const diorySlice = createSlice({
       }
     );
     builder.addCase(loadDioryContent.fulfilled, (state, action) => {
-      const { id, url } = action.payload;
-      state.contentUrls[id] = url;
+      const { id, url, mimeType } = action.payload;
+      state.contentUrls[id] = { url, mimeType };
     });
   },
 });

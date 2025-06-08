@@ -24,58 +24,61 @@ const HomePage = () => {
           gap: "16px",
         }}
       >
-        {rootDiory.links.map((story) => (
-          // Each grid item is a flex container with fixed height
-          <div
-            key={story.id}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "space-between",
-              height: "300hw", // Adjust height as needed
-            }}
-          >
-            {/* Image container to center the image vertically */}
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-              }}
-              onClick={() => {
-                // TODO: Set first diory of the story in focus
-                const firstDioryOfStory = Object.values(
-                  diograph[story.id].links
-                )[0].id;
-                dispatch(
-                  setFocus({
-                    focusId: firstDioryOfStory,
-                    storyId: story.id,
-                  })
-                );
-                navigate(
-                  `/diory/${firstDioryOfStory}/grid?storyId=${story.id}`
-                );
-              }}
-            >
-              <img
-                src={diograph[story.id].image}
+        {rootDiory.links.map(
+          (story) =>
+            // Each grid item is a flex container with fixed height
+            diograph[story.id] && (
+              <div
+                key={story.id}
                 style={{
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-                  cursor: "pointer",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  height: "300hw", // Adjust height as needed
                 }}
-              />
-            </div>
-            {/* Text container always at the bottom */}
-            <div style={{ marginBottom: "8px" }}>
-              <p style={{ margin: 0 }}>{diograph[story.id].text}</p>
-            </div>
-          </div>
-        ))}
+              >
+                {/* Image container to center the image vertically */}
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "100%",
+                  }}
+                  onClick={() => {
+                    // TODO: Set first diory of the story in focus
+                    const firstDioryOfStory = Object.values(
+                      diograph[story.id].links
+                    )[0].id;
+                    dispatch(
+                      setFocus({
+                        focusId: firstDioryOfStory,
+                        storyId: story.id,
+                      })
+                    );
+                    navigate(
+                      `/diory/${firstDioryOfStory}/grid?storyId=${story.id}`
+                    );
+                  }}
+                >
+                  <img
+                    src={diograph[story.id].image}
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "100%",
+                      cursor: "pointer",
+                    }}
+                  />
+                </div>
+                {/* Text container always at the bottom */}
+                <div style={{ marginBottom: "8px" }}>
+                  <p style={{ margin: 0 }}>{diograph[story.id].text}</p>
+                </div>
+              </div>
+            )
+        )}
       </div>
     </div>
   );
