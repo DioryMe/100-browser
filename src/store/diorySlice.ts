@@ -7,7 +7,11 @@ import { IDiographObject, IDioryObject } from "@diograph/diograph/types";
 const roomAddress1 =
   "https://raw.githubusercontent.com/DioryMe/demo-content-room/refs/heads/main";
 const roomAddress2 = "http://diory-demo-content.surge.sh";
-const roomAddress = roomAddress2;
+const roomAddress3 = "http://localhost:8080/RoomName";
+const roomAddress = roomAddress3;
+
+// const token1 = "Bearer e10d1d2e-032e-4c42-bc53-587239a3119f";
+const basicAuthToken = "e10d1d2e-032e-4c42-bc53-587239a3119f";
 
 // Replace the empty loadDioryContent with the following async thunk:
 export const loadDioryContent = createAsyncThunk(
@@ -22,7 +26,10 @@ export const loadDioryContent = createAsyncThunk(
 
     // Create and load the room; ensure constructAndLoadRoom is correctly imported.
     const room = await constructAndLoadRoom(roomAddress, "HttpClient", {
-      HttpClient: { clientConstructor: HttpClient },
+      HttpClient: {
+        clientConstructor: HttpClient,
+        credentials: { basicAuthToken },
+      },
     });
     const response = await room.readContent(cid);
     const blob = new Blob([response], { type: mimeType });
@@ -33,7 +40,9 @@ export const loadDioryContent = createAsyncThunk(
 
 // Thunk action to asynchronously load the diograph
 export const loadDiograph = createAsyncThunk("diory/loadDiograph", async () => {
-  const httpClient = new HttpClient(roomAddress);
+  const httpClient = new HttpClient(roomAddress, {
+    basicAuthToken,
+  });
   const diographContents = await httpClient.readTextItem("diograph.json");
   const diographJson = JSON.parse(diographContents);
   validateDiograph(diographJson);
