@@ -32,7 +32,7 @@ export const loadDioryContent = createAsyncThunk(
         credentials: { basicAuthToken },
       },
     });
-    console.log("BOOM", cid);
+
     const response = await room.readContent(cid);
     const blob = new Blob([response], { type: mimeType });
     // Return the diory id with the generated blob URL.
@@ -135,9 +135,16 @@ const diorySlice = createSlice({
         storyId || (state.stories[0] && state.stories[0].id) || null;
       if (oldStoryId !== newStoryId) {
         const focusContentUrl = state.contentUrls[storyId];
-        // TODO: Revoke URLs if necessary before clearing them.
+        // Revoke all existing object URLs except the one for the current focus (if available)
+        Object.keys(state.contentUrls).forEach((key) => {
+          if (key !== storyId && state.contentUrls[key]?.url) {
+            URL.revokeObjectURL(state.contentUrls[key].url);
+          }
+        });
         state.contentUrls = {};
-        state.contentUrls[storyId] = focusContentUrl;
+        if (focusContentUrl) {
+          state.contentUrls[storyId] = focusContentUrl;
+        }
       }
       state.storyId = newStoryId;
       state.storyDiories = getStoryDiories(state.storyId, state.diograph);
