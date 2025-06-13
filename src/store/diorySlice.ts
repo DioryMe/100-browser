@@ -4,15 +4,8 @@ import { HttpClient } from "@diograph/http-client";
 import { validateDiograph } from "@diograph/diograph/validator";
 import { IDiographObject, IDioryObject } from "@diograph/diograph/types";
 
-const roomAddress1 =
-  "https://raw.githubusercontent.com/DioryMe/demo-content-room/refs/heads/main";
-const roomAddress2 = "http://diory-demo-content.surge.sh";
-const roomAddress3 = "http://localhost:8080/RoomName";
-const roomAddress4 = "http://localhost:8080/OopeeDiory";
-const roomAddress = roomAddress4;
-
-// const token1 = "Bearer e10d1d2e-032e-4c42-bc53-587239a3119f";
-const basicAuthToken = "e10d1d2e-032e-4c42-bc53-587239a3119f";
+const roomAddress = localStorage.getItem("roomAddress");
+const basicAuthToken = localStorage.getItem("basicAuthToken");
 
 // Replace the empty loadDioryContent with the following async thunk:
 export const loadDioryContent = createAsyncThunk(
