@@ -26,7 +26,7 @@ const SetCredentials = () => {
       console.warn("No credentials query param provided!");
     }
     // Redirect to home page
-    navigate("/");
+    window.location.href = "/";
   }, [location.search, navigate]);
 
   return (
