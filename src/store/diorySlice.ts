@@ -7,18 +7,15 @@ import { IDiographObject, IDioryObject } from "@diograph/diograph/types";
 const roomAddress = localStorage.getItem("roomAddress");
 const basicAuthToken = localStorage.getItem("basicAuthToken");
 
-// Replace the empty loadDioryContent with the following async thunk:
 export const loadDioryContent = createAsyncThunk(
   "diory/loadDioryContent",
   async (diory: IDioryObject) => {
-    // Verify the diory has content data
     if (!diory.data || !diory.data.length) {
       throw new Error("No content available in diory");
     }
     const cid = diory.data[0].contentUrl;
     const mimeType = diory.data[0]["encodingFormat"];
 
-    // Create and load the room; ensure constructAndLoadRoom is correctly imported.
     const room = await constructAndLoadRoom(roomAddress, "HttpClient", {
       HttpClient: {
         clientConstructor: HttpClient,
@@ -28,24 +25,24 @@ export const loadDioryContent = createAsyncThunk(
 
     const response = await room.readContent(cid);
     const blob = new Blob([response], { type: mimeType });
-    // Return the diory id with the generated blob URL.
     return { id: diory.id, url: URL.createObjectURL(blob), mimeType };
   }
 );
 
-// Thunk action to asynchronously load the diograph
 export const loadDiograph = createAsyncThunk("diory/loadDiograph", async () => {
-  const httpClient = new HttpClient(roomAddress, {
-    basicAuthToken,
-  });
-  // const httpClient = new HttpClient(roomAddress);
+  const httpClient = new HttpClient(roomAddress, { basicAuthToken });
   const diographContents = await httpClient.readTextItem("diograph.json");
   const diographJson = JSON.parse(diographContents);
   validateDiograph(diographJson);
   return diographJson;
 });
 
-// Define the initial state using the DioryInfo shape
+interface ContentUrlLoadingState {
+  status: "loading" | "fulfilled" | "rejected" | "cancelled";
+  error?: any;
+  loadedCID?: string;
+}
+
 interface DioryState {
   diograph: IDiographObject | null;
   focusId: string | null;
@@ -55,6 +52,7 @@ interface DioryState {
   nextId: string;
   stories: IDioryObject[];
   contentUrls: { [key: string]: { url: string; mimeType: string } };
+  contentUrlLoading: { [key: string]: ContentUrlLoadingState };
 }
 
 const initialState: DioryState = {
@@ -66,6 +64,7 @@ const initialState: DioryState = {
   nextId: null,
   stories: [],
   contentUrls: {},
+  contentUrlLoading: {},
 };
 
 const getStoryDiories = (storyId: string, diograph: IDiographObject) => {
@@ -128,7 +127,6 @@ const diorySlice = createSlice({
         storyId || (state.stories[0] && state.stories[0].id) || null;
       if (oldStoryId !== newStoryId) {
         const focusContentUrl = state.contentUrls[storyId];
-        // Revoke all existing object URLs except the one for the current focus (if available)
         Object.keys(state.contentUrls).forEach((key) => {
           if (key !== storyId && state.contentUrls[key]?.url) {
             URL.revokeObjectURL(state.contentUrls[key].url);
@@ -149,7 +147,6 @@ const diorySlice = createSlice({
       state.prevId = prevId;
       state.nextId = nextId;
     },
-    // setStoryDiory allows updating just the story piece of the state.
     setStory(state, action: PayloadAction<any>) {
       state.storyId = action.payload;
     },
@@ -157,6 +154,7 @@ const diorySlice = createSlice({
       state.diograph = action.payload;
     },
   },
+
   extraReducers: (builder) => {
     builder.addCase(
       loadDiograph.fulfilled,
@@ -164,9 +162,36 @@ const diorySlice = createSlice({
         state.diograph = action.payload;
       }
     );
+    // When loading starts, mark the loading state with status 'loading'
+    builder.addCase(loadDioryContent.pending, (state, action) => {
+      const diory = action.meta.arg;
+      state.contentUrlLoading[diory.id] = {
+        status: "loading",
+        error: undefined,
+        loadedCID: diory.data[0].contentUrl,
+      };
+    });
+    // When fulfilled, store the loaded URL and mark status as 'fulfilled'
     builder.addCase(loadDioryContent.fulfilled, (state, action) => {
       const { id, url, mimeType } = action.payload;
-      state.contentUrls[id] = { url, mimeType };
+      state.contentUrlLoading[id] = {
+        status: "fulfilled",
+        error: undefined,
+        loadedCID: state.contentUrlLoading[id].loadedCID,
+      };
+      state.contentUrls[id] = {
+        url,
+        mimeType,
+      };
+    });
+    // On rejection, mark status as 'rejected' and save the error
+    builder.addCase(loadDioryContent.rejected, (state, action) => {
+      const diory = action.meta.arg;
+      state.contentUrlLoading[diory.id] = {
+        status: "rejected",
+        error: action.error,
+        loadedCID: diory.data[0].contentUrl,
+      };
     });
   },
 });

@@ -32,6 +32,7 @@ const DiorySwiper = ({ createSlide }: Props) => {
   useEffect(() => {
     if (!focusId && urlParamFocusId) {
       const storyId = new URLSearchParams(search).get("storyId");
+      console.log("dispatch setFocus", { focusId: urlParamFocusId, storyId });
       dispatch(setFocus({ focusId: urlParamFocusId, storyId }));
     }
   }, [focusId, urlParamFocusId]);
@@ -42,6 +43,7 @@ const DiorySwiper = ({ createSlide }: Props) => {
       const newSlides = [prevId, focusId, nextId];
       setSlides(newSlides);
 
+      console.log("latter setFocus", { focusId: urlParamFocusId, storyId });
       dispatch(setFocus({ focusId, storyId }));
 
       if (swiper) {
@@ -53,21 +55,22 @@ const DiorySwiper = ({ createSlide }: Props) => {
     }
   }, [focusId, swiper, diograph]);
 
-  // New effect: Ensure content for current slide diories is loaded in Redux.
-  useEffect(() => {
-    if (diograph && storyId) {
-      const neededIds = [prevId, focusId, nextId].filter((id) => id != null);
-      const diographInstance = new Diograph(diograph);
-      neededIds.forEach((id) => {
-        if (!contentUrls[id]) {
-          const diory = diographInstance.getDiory({ id });
-          if (diory && diory.data) {
-            dispatch(loadDioryContent(diory));
-          }
-        }
-      });
-    }
-  }, [diograph, storyId, prevId, focusId, nextId, contentUrls, dispatch]);
+  // // Triggers loadDioryContent for focus, next & prev
+  // useEffect(() => {
+  //   if (diograph && storyId) {
+  //     const neededIds = [prevId, focusId, nextId].filter((id) => id != null);
+  //     const diographInstance = new Diograph(diograph);
+  //     neededIds.forEach((id) => {
+  //       if (!contentUrls[id]) {
+  //         const diory = diographInstance.getDiory({ id });
+  //         if (diory && diory.data) {
+  //           console.log("loadDioryContent", diory);
+  //           dispatch(loadDioryContent(diory));
+  //         }
+  //       }
+  //     });
+  //   }
+  // }, [diograph, storyId, prevId, focusId, nextId, contentUrls, dispatch]);
 
   return (
     <>

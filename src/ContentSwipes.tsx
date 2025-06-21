@@ -6,6 +6,7 @@ import DiorySwiper from "./DiorySwiper";
 import { ContentSlide } from "./ContentSlide";
 
 const createContentSlide = (diory: IDioryObject, key: number) => {
+  console.log("baa", diory);
   if (!diory) return null;
 
   return (
